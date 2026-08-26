@@ -28,6 +28,19 @@ source: URL
 
 ## 2026-08
 
+### 2026-08-25 — PortSwigger — nom de balise comme source JavaScript / transformation DOM
+
+- **Famille :** `dom-xss`, `parser-differential`, `waf-bypass`, `html-parser`
+- **Contexte :** balises HTML non standard dont le nom est relu via des propriétés DOM telles que `localName`, puis réutilisé comme donnée dans un contexte JavaScript, URL ou HTML.
+- **Produit :** comportement navigateur / DOM, pas un produit unique.
+- **Navigateurs :** Chrome/Blink, Firefox/Gecko, Safari/WebKit et Edge selon la publication.
+- **Identifiants :** aucun CVE ; recherche PortSwigger.
+- **Plateforme / source d'origine :** PortSwigger Research, Gareth Heyes.
+- **Description non destructive :** la recherche montre que le nom d'une balise peut transporter une chaîne transformée par le parseur puis être relue par le DOM avec une casse ou une segmentation différente. Des propriétés comme `localName`, `part` et `classList` peuvent ensuite fournir ces données à un gestionnaire d'événement ou à une API DOM. Pour le corpus, utiliser uniquement des marqueurs inoffensifs et vérifier la transformation `source HTML -> DOM -> valeur relue`, sans exécution sensible.
+- **Intérêt corpus :** ajouter des cas où la charge utile logique n'est pas portée par un attribut classique mais par le **tag name** lui-même ; couvrir les transformations de casse, caractères inhabituels, séparateurs Unicode, focusabilité (`tabindex`/`contenteditable`) et réutilisation via `localName`, `part` ou `classList`. Ces cas sont particulièrement utiles pour évaluer les blocklists, normalisations et signatures WAF qui supposent des noms de balises conventionnels.
+- **Statut :** `à intégrer`
+- **Source :** https://portswigger.net/research/whats-in-a-tag-name-javascript-apparently
+
 ### 2026-08-23 — justhtml <= 1.13.0 — parser differential / mutation XSS
 
 - **Famille :** `mxss`, `parser-differential`, `sanitizer`
@@ -77,4 +90,5 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-08-26** — Ajout de la recherche PortSwigger du 25 août sur l'utilisation du nom de balise comme source JavaScript / transformation DOM.
 - **2026-08-25** — Initialisation du fichier et ajout des premières entrées vérifiées de la veille d'août 2026.
