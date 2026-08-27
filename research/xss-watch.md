@@ -28,6 +28,19 @@ source: URL
 
 ## 2026-08
 
+### 2026-08-26 — SunEditor <= 3.1.3 — DOM XSS dans le plugin Embed après parsing d'iframe
+
+- **Famille :** `dom-xss`, `sanitizer-bypass`, `domparser`, `editor-embed`
+- **Contexte :** contenu HTML fourni au plugin Embed, parsé avec `DOMParser`, puis certains nœuds sont recréés et ajoutés au DOM actif après un embed valide.
+- **Produit :** SunEditor <= 3.1.3 ; corrigé en 3.1.4.
+- **Navigateurs :** navigateurs exécutant le DOM standard ; le problème est lié au flux applicatif du plugin plutôt qu'à une divergence moteur spécifique.
+- **Identifiants :** CVE-2026-54606 / GHSA-w93q-cq9w-58p7.
+- **Plateforme / source d'origine :** advisory SunEditor / GitHub Security Advisory ; CVE publié/indexé le 26 août 2026.
+- **Description non destructive :** le plugin analyse un fragment d'embed, puis peut recréer un élément externe contrôlé par l'entrée et l'attacher au document actif. Pour un corpus autorisé, remplacer toute ressource active par un marqueur local neutre et vérifier uniquement qu'un nœud inattendu survit au pipeline `parse -> inspect -> recreate -> append`.
+- **Intérêt corpus :** ajouter des tests où un élément autorisé sert de préfixe à des nœuds frères non attendus ; vérifier que la sanitisation porte sur l'ensemble du fragment et qu'aucun nœud actif n'est recréé après validation. Ce cas complète les tests classiques de sanitisation en ciblant la réintroduction d'un nœud après `DOMParser`.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/JiHong88/suneditor/security/advisories/GHSA-w93q-cq9w-58p7 ; https://nvd.nist.gov/vuln/detail/CVE-2026-54606 ; https://advisories.gitlab.com/npm/suneditor/CVE-2026-54606/
+
 ### 2026-08-25 — PortSwigger — nom de balise comme source JavaScript / transformation DOM
 
 - **Famille :** `dom-xss`, `parser-differential`, `waf-bypass`, `html-parser`
@@ -90,5 +103,6 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-08-27** — Ajout de CVE-2026-54606 / GHSA-w93q-cq9w-58p7 : réintroduction d'un nœud actif après parsing d'un fragment Embed dans SunEditor.
 - **2026-08-26** — Ajout de la recherche PortSwigger du 25 août sur l'utilisation du nom de balise comme source JavaScript / transformation DOM.
 - **2026-08-25** — Initialisation du fichier et ajout des premières entrées vérifiées de la veille d'août 2026.
