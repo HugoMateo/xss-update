@@ -28,6 +28,45 @@ source: URL
 
 ## 2026-08
 
+### 2026-08-28 — Pocket Android <= 8.33.0.0 — HTML externe injecté dans une WebView avec pont natif
+
+- **Famille :** `webview-xss`, `dom-xss`, `native-bridge`, `mobile`
+- **Contexte :** la fonction « Save to Pocket » charge du HTML externe dans le DOM d'une WebView ; du JavaScript exécuté dans ce contexte peut atteindre des méthodes de pont natif et modifier l'état de l'application.
+- **Produit :** Pocket Android <= 8.33.0.0.
+- **Navigateurs :** Android WebView / moteur Chromium embarqué.
+- **Identifiants :** CVE-2026-82090.
+- **Plateforme / source d'origine :** publication CVE/MITRE du 28 août 2026, avec description technique publique référencée sur GitHub.
+- **Description non destructive :** tester uniquement qu'un fragment HTML externe comportant un marqueur neutre est interprété comme contenu actif dans la WebView et qu'une interface JavaScript exposée est visible depuis ce contexte, sans invoquer de méthode modifiant des données ou l'état applicatif.
+- **Intérêt corpus :** ajouter une classe `external HTML -> WebView DOM -> JS bridge exposure` distincte des XSS navigateur classiques. Vérifier séparément la sanitisation du HTML, l'origine du contenu, l'activation de JavaScript et l'exposition des interfaces natives.
+- **Statut :** `à intégrer`
+- **Sources :** https://www.cve.org/CVERecord?id=CVE-2026-82090 ; https://vulnerability.circl.lu/vuln/cve-2026-82090 ; https://github.com/FUNFACTOR1/pocket-android-xss-0click-cve
+
+### 2026-08-28 — wallabag Android <= 2.6.0 — données API rendues directement dans une WebView
+
+- **Famille :** `webview-xss`, `stored-xss`, `api-to-dom`, `mobile`
+- **Contexte :** des données d'entrées récupérées via `/api/entries` sont chargées dans une WebView Android sans frontière de confiance suffisante entre contenu serveur et contexte de rendu actif.
+- **Produit :** wallabag Android <= 2.6.0.
+- **Navigateurs :** Android WebView.
+- **Identifiants :** CVE-2026-82089 / GHSA-q2g2-www6-wf5h.
+- **Plateforme / source d'origine :** CVE/MITRE et advisory GitHub wallabag, publiés/référencés le 28 août 2026.
+- **Description non destructive :** injecter dans une entrée de test autorisée un marqueur HTML inoffensif et vérifier si la chaîne `API -> stockage/cache -> WebView` le transforme en DOM actif. Ne pas utiliser d'appel réseau, de lecture de secrets ni d'API natives.
+- **Intérêt corpus :** couvrir les XSS dont la source est une API applicative considérée à tort comme « de confiance », notamment dans les clients mobiles hybrides. Ajouter des variantes avec contenu persistant, synchronisation et lecture hors-ligne.
+- **Statut :** `à intégrer`
+- **Sources :** https://www.cve.org/CVERecord?id=CVE-2026-82089 ; https://vulnerability.circl.lu/vuln/cve-2026-82089 ; https://github.com/wallabag/wallabag/security/advisories/GHSA-q2g2-www6-wf5h
+
+### 2026-08-27 — Netron <= 9.1.2 — DOM XSS dans une application desktop Electron via champs de modèle
+
+- **Famille :** `dom-xss`, `electron`, `desktop`, `innerhtml`
+- **Contexte :** des champs contrôlés par un fichier de modèle sont rendus dans la barre latérale via HTML non échappé ; dans l'application desktop Electron, le script s'exécute dans un contexte plus privilégié qu'une page web ordinaire.
+- **Produit :** Netron <= 9.1.2 ; corrigé à partir de 9.1.3.
+- **Navigateurs :** Electron 42.3.3 / Chromium embarqué selon l'advisory.
+- **Identifiants :** CVE-2026-79718, CVE-2026-79719, CVE-2026-79720.
+- **Plateforme / source d'origine :** HiddenLayer SAI Security Advisory, Esteban Tonglet, publié le 27 août 2026.
+- **Description non destructive :** ouvrir uniquement un modèle de test local contenant un marqueur HTML neutre dans un champ de nom et vérifier s'il devient un nœud DOM interprété dans la barre latérale. Ne pas effectuer de requêtes réseau ni tester de chaîne vers une vulnérabilité du moteur Chromium.
+- **Intérêt corpus :** ajouter une classe `untrusted file metadata -> innerHTML -> Electron renderer`, avec comparaison entre rendu web et application desktop. Ce cas rappelle qu'une XSS dans un shell Electron doit être testée avec des contraintes de contexte distinctes d'une XSS navigateur.
+- **Statut :** `à intégrer`
+- **Sources :** https://www.hiddenlayer.com/sai-security-advisory/2026-08-netron ; https://github.com/lutzroeder/netron/commit/cd14bad8c9132b1aaf1d197fe61925575f194f00
+
 ### 2026-08-26 — SunEditor <= 3.1.3 — DOM XSS dans le plugin Embed après parsing d'iframe
 
 - **Famille :** `dom-xss`, `sanitizer-bypass`, `domparser`, `editor-embed`
@@ -103,6 +142,7 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-08-28** — Ajout de trois familles significatives : Pocket Android (HTML externe vers WebView avec pont natif), wallabag Android (API vers WebView) et Netron desktop (métadonnées de fichier vers `innerHTML` dans Electron).
 - **2026-08-27** — Ajout de CVE-2026-54606 / GHSA-w93q-cq9w-58p7 : réintroduction d'un nœud actif après parsing d'un fragment Embed dans SunEditor.
 - **2026-08-26** — Ajout de la recherche PortSwigger du 25 août sur l'utilisation du nom de balise comme source JavaScript / transformation DOM.
 - **2026-08-25** — Initialisation du fichier et ajout des premières entrées vérifiées de la veille d'août 2026.
