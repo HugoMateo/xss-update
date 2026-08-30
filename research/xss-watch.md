@@ -28,6 +28,45 @@ source: URL
 
 ## 2026-08
 
+### 2026-08-29 — Formwork — source `Referer` persistée puis rendue dans les statistiques admin
+
+- **Famille :** `stored-xss`, `http-header`, `analytics`, `admin-ui`, `trust-boundary`
+- **Contexte :** le suivi des visites extrait l'hôte de l'en-tête HTTP `Referer`, le stocke comme source de trafic puis l'affiche dans le panneau Statistics sans neutralisation suffisante.
+- **Produit :** Formwork. Le GHSA primaire indique 2.0.0–2.3.10 affectées et 2.3.11 corrigée ; le CVE-2026-82451 publié le 29 août indique pour sa part des versions affectées jusqu'à 2.3.14. Cette divergence de métadonnées doit être conservée dans le corpus plutôt que résolue par supposition.
+- **Navigateurs :** navigateurs web standards ; aucun moteur particulier n'est requis par l'advisory.
+- **Identifiants :** CVE-2026-82451 / GHSA-hpgc-57cm-66pc.
+- **Plateforme / source d'origine :** GitHub Security Advisory getformwork/formwork, complété par le CVE publié le 29 août 2026.
+- **Description non destructive :** dans une instance de test autorisée, enregistrer une valeur de `Referer` contenant uniquement un marqueur HTML neutre, puis vérifier si la valeur est persistée et réinterprétée comme balisage lors de l'ouverture du panneau Statistics. Ne pas utiliser de JavaScript actif, de collecte de session ni d'action privilégiée.
+- **Intérêt corpus :** ajouter une chaîne `HTTP metadata -> analytics persistence -> privileged HTML sink`. Ce cas est utile pour vérifier que les journaux, statistiques et données de télémétrie ne sont jamais considérés comme fiables simplement parce qu'ils proviennent de métadonnées HTTP.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/getformwork/formwork/security/advisories/GHSA-hpgc-57cm-66pc ; https://www.cve.org/CVERecord?id=CVE-2026-82451 ; https://vulnerability.circl.lu/vuln/cve-2026-82451
+
+### 2026-08-28 — PrivateBin <= 2.0.4 — type MIME contrôlé et `blob:` same-origin dans le lien de téléchargement
+
+- **Famille :** `stored-xss`, `blob-url`, `mime-confusion`, `sanitizer-gap`, `csp-dependent`
+- **Contexte :** une pièce jointe déchiffrée côté client fournit un type MIME contrôlé par l'entrée. Le lien de téléchargement peut pointer vers un `blob:` non assaini tandis que la branche de sanitisation ne traite que certains aperçus SVG.
+- **Produit :** PrivateBin <= 2.0.4 ; corrigé en 2.0.5.
+- **Navigateurs :** comportement confirmé avec Chromium dans l'advisory ; le risque repose plus généralement sur le rendu d'un `blob:` actif dans l'origine de l'application.
+- **Identifiants :** CVE-2026-55696 / GHSA-f2xf-7x3g-4272.
+- **Plateforme / source d'origine :** advisory GitHub PrivateBin ; publication dans la GitHub Advisory Database et CVE le 28 août 2026.
+- **Description non destructive :** sur une instance de test avec upload activé, générer une pièce jointe inoffensive déclarée avec plusieurs types MIME et vérifier si l'action « ouvrir dans un nouvel onglet » produit un document `blob:` rendu dans l'origine applicative. Utiliser uniquement un marqueur visuel local et ne lire ni cookies, ni stockage local, ni ressources same-origin.
+- **Intérêt corpus :** ajouter une chaîne `attacker-controlled MIME -> Blob(Content-Type) -> download href -> new-tab navigation -> origin inheritance`, en distinguant le blob utilisé pour l'aperçu de celui utilisé pour le téléchargement. Tester également l'effet d'une CSP recommandée, affaiblie ou absente.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/PrivateBin/PrivateBin/security/advisories/GHSA-f2xf-7x3g-4272 ; https://github.com/PrivateBin/PrivateBin/releases/tag/2.0.5 ; https://www.cve.org/CVERecord?id=CVE-2026-55696
+
+### 2026-08-27 — LiteSpeed Cache <= 7.7 — transformation regex d'attributs `<img>` créant une XSS stockée
+
+- **Famille :** `stored-xss`, `html-rewrite`, `regex-parser`, `attribute-boundary`, `wordpress`
+- **Contexte :** lorsque « Lazy Load Images » et « Add Missing Sizes » sont activés, une expression régulière utilisée pour retirer/réécrire les attributs `width` et `height` peut transformer des attributs d'image contrôlés par un auteur en balisage actif lors du traitement de la page.
+- **Produit :** LiteSpeed Cache for WordPress <= 7.7 ; corrigé en 7.8.
+- **Navigateurs :** navigateurs web standards ; la faiblesse est dans la transformation serveur du HTML.
+- **Identifiants :** CVE-2026-3129.
+- **Plateforme / source d'origine :** LiteSpeed Technologies, signalement Wordfence ; bulletin fournisseur publié le 27 août 2026 et CVE publié le 28 août 2026.
+- **Description non destructive :** dans un site de test avec les deux options concernées activées, fournir une balise `<img>` contenant uniquement des valeurs sentinelles autour de `width`/`height`, puis comparer le HTML avant et après la réécriture. Le test doit détecter l'apparition inattendue d'une nouvelle frontière d'attribut ou d'un nouveau nœud sans exécuter de script.
+- **Intérêt corpus :** ajouter des cas `HTML input -> regex attribute rewrite -> reparsed HTML`, avec variations de guillemets, ordre des attributs et valeurs limites. Cette famille complète les tests de parser differential en ciblant les transformations textuelles qui précèdent le parsing navigateur.
+- **Statut :** `à intégrer`
+- **Sources :** https://blog.litespeedtech.com/2026/08/27/security-update-for-lscwp-cve-2026-3129/ ; https://www.cve.org/CVERecord?id=CVE-2026-3129 ; https://vulnerability.circl.lu/vuln/cve-2026-3129
+
 ### 2026-08-28 — Pocket Android <= 8.33.0.0 — HTML externe injecté dans une WebView avec pont natif
 
 - **Famille :** `webview-xss`, `dom-xss`, `native-bridge`, `mobile`
@@ -142,6 +181,7 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-08-30** — Ajout de trois familles : Formwork (`Referer` -> statistiques admin), PrivateBin (MIME contrôlé -> `blob:` same-origin) et LiteSpeed Cache (réécriture regex d'attributs `<img>`). La divergence de versions Formwork entre GHSA et CVE est documentée explicitement.
 - **2026-08-28** — Ajout de trois familles significatives : Pocket Android (HTML externe vers WebView avec pont natif), wallabag Android (API vers WebView) et Netron desktop (métadonnées de fichier vers `innerHTML` dans Electron).
 - **2026-08-27** — Ajout de CVE-2026-54606 / GHSA-w93q-cq9w-58p7 : réintroduction d'un nœud actif après parsing d'un fragment Embed dans SunEditor.
 - **2026-08-26** — Ajout de la recherche PortSwigger du 25 août sur l'utilisation du nom de balise comme source JavaScript / transformation DOM.
