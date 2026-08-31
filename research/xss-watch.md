@@ -28,6 +28,32 @@ source: URL
 
 ## 2026-08
 
+### 2026-08-30 — Readest < 0.11.16 — `iframe srcdoc` survivant à la sanitisation EPUB dans un shell Tauri
+
+- **Famille :** `dom-xss`, `sanitizer-bypass`, `srcdoc`, `desktop`, `tauri`
+- **Contexte :** le contenu HTML des chapitres EPUB passe par DOMPurify, mais la configuration concernée interdisait principalement `script` sans bloquer `iframe`/`object`/`embed` ni l'attribut `srcdoc`. Un document imbriqué pouvait donc conserver une interprétation HTML active après sanitisation.
+- **Produit :** Readest < 0.11.16 ; corrigé en 0.11.16.
+- **Navigateurs :** moteur WebView embarqué par l'application desktop Tauri sous Windows, macOS et Linux ; le point important est la frontière entre contenu EPUB non fiable et contexte applicatif.
+- **Identifiants :** CVE-2026-82642 / GHSA-p4x7-pf2c-xrvj.
+- **Plateforme / source d'origine :** JFrog Security Research / GitHub Security Advisory Readest, avec correctif et release publics.
+- **Description non destructive :** dans une copie de test locale d'un EPUB, placer uniquement un marqueur visuel neutre dans un document `srcdoc` et vérifier s'il apparaît après le pipeline de sanitisation et rendu. Ne pas invoquer d'IPC Tauri, de commande système, d'accès fichier ou de lecture de secrets.
+- **Intérêt corpus :** ajouter un pipeline `untrusted EPUB HTML -> DOMPurify config -> iframe/srcdoc nested document -> desktop WebView`, en vérifiant séparément les listes `FORBID_TAGS` et `FORBID_ATTR`. Ce cas est particulièrement utile pour détecter les sanitizers qui raisonnent sur le DOM parent mais laissent un second document HTML opaque dans un attribut.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/readest/readest/security/advisories/GHSA-p4x7-pf2c-xrvj ; https://github.com/readest/readest/pull/4762 ; https://github.com/readest/readest/commit/005aa2d6157a34049bf45641c06861d606a85edb ; https://github.com/readest/readest/releases/tag/v0.11.16 ; https://www.cve.org/CVERecord?id=CVE-2026-82642
+
+### 2026-08-30 — SiYuan < 3.8.1 — métadonnées de blocs non échappées dans hints, backlinks et breadcrumbs
+
+- **Famille :** `stored-xss`, `metadata-to-dom`, `multi-sink`, `knowledge-base`
+- **Contexte :** des champs persistants de bloc tels que nom, alias et mémo sont réutilisés dans plusieurs surfaces de rendu — hints, backlinks et breadcrumbs — sans échappement suffisant.
+- **Produit :** SiYuan < 3.8.1 ; 3.8.1 indiqué comme non affecté dans les données CVE publiées.
+- **Navigateurs :** contexte de rendu web/desktop de SiYuan ; aucune divergence moteur particulière n'est nécessaire d'après les advisories publics.
+- **Identifiants :** CVE-2026-82654 / GHSA-hf87-qh3j-3p88.
+- **Plateforme / source d'origine :** GitHub Security Advisory SiYuan, recoupé avec l'enregistrement CVE/VulnCheck publié le 30 août 2026.
+- **Description non destructive :** créer dans un espace de test un bloc dont le nom, l'alias ou le mémo contient seulement un marqueur HTML neutre, puis ouvrir les vues qui réutilisent cette métadonnée et relever où le marqueur devient un nœud DOM plutôt qu'un texte échappé. Ne pas exécuter de JavaScript ni accéder aux données d'autres utilisateurs.
+- **Intérêt corpus :** ajouter une famille `persistent metadata -> multiple secondary renderers`, avec matrice `field × sink` couvrant nom/alias/mémo et hint/backlink/breadcrumb. Cette famille permet de détecter les corrections partielles où le rendu principal est sécurisé mais une vue secondaire conserve un sink HTML.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/siyuan-note/siyuan/security/advisories/GHSA-hf87-qh3j-3p88 ; https://www.vulncheck.com/advisories/siyuan-before-3.8.1-stored-xss-via-block-name ; https://www.cve.org/CVERecord?id=CVE-2026-82654
+
 ### 2026-08-29 — Formwork — source `Referer` persistée puis rendue dans les statistiques admin
 
 - **Famille :** `stored-xss`, `http-header`, `analytics`, `admin-ui`, `trust-boundary`
@@ -181,6 +207,7 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-08-31** — Ajout de Readest (document `srcdoc` imbriqué survivant à une configuration DOMPurify trop permissive dans un shell Tauri) et SiYuan (métadonnées persistantes de blocs réutilisées dans plusieurs sinks secondaires : hints, backlinks et breadcrumbs).
 - **2026-08-30** — Ajout de trois familles : Formwork (`Referer` -> statistiques admin), PrivateBin (MIME contrôlé -> `blob:` same-origin) et LiteSpeed Cache (réécriture regex d'attributs `<img>`). La divergence de versions Formwork entre GHSA et CVE est documentée explicitement.
 - **2026-08-28** — Ajout de trois familles significatives : Pocket Android (HTML externe vers WebView avec pont natif), wallabag Android (API vers WebView) et Netron desktop (métadonnées de fichier vers `innerHTML` dans Electron).
 - **2026-08-27** — Ajout de CVE-2026-54606 / GHSA-w93q-cq9w-58p7 : réintroduction d'un nœud actif après parsing d'un fragment Embed dans SunEditor.
