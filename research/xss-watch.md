@@ -28,6 +28,19 @@ source: URL
 
 ## 2026-08
 
+### 2026-08-31 — Helix Ultimate < 2.2.10 — configuration MegaMenu JSON persistée puis rendue dans plusieurs contextes
+
+- **Famille :** `stored-xss`, `json-to-html`, `contextual-escaping`, `cms`, `multi-sink`
+- **Contexte :** des valeurs de configuration de colonnes et d'éléments du MegaMenu sont persistées dans le JSON de layout puis réutilisées dans le rendu. Les versions antérieures à 2.2.10 n'appliquaient pas un filtrage et un échappement contextuel complets sur ces valeurs ; la release 2.2.10 durcit également plusieurs surfaces voisines, notamment les embeds vidéo/audio, les handlers de partage social et certains attributs de titre.
+- **Produit :** JoomShaper Helix Ultimate < 2.2.10 ; version 2.2.10 publiée le 27 août 2026 avec les correctifs, CVE/GHSA publiés le 31 août 2026.
+- **Navigateurs :** navigateurs web standards ; aucune divergence moteur spécifique n'est nécessaire.
+- **Identifiants :** CVE-2026-78077 / GHSA-v6p2-jx9w-8967.
+- **Plateforme / source d'origine :** Joomla CNA / GitHub Advisory Database, recoupé avec les notes de version officielles JoomShaper 2.2.10.
+- **Description non destructive :** dans une instance Joomla de test autorisée, enregistrer dans les champs de configuration MegaMenu uniquement des marqueurs HTML neutres et vérifier, pour chaque surface de rendu, si la valeur reste du texte ou devient un nœud DOM. Ne pas exécuter de JavaScript, ne pas utiliser de données de session et ne pas combiner avec les faiblesses d'autorisation publiées séparément.
+- **Intérêt corpus :** ajouter une matrice `persistent JSON config -> renderer/context`, en couvrant texte, attribut, URL/identifiant d'embed et handlers générés. Le cas est utile pour détecter les corrections partielles où une validation à l'entrée paraît suffisante mais où une même valeur est réinterprétée dans plusieurs contextes nécessitant des encodeurs différents. Ajouter également un contrôle de régression sur le couple `InputFilter -> contextual output encoding` plutôt qu'une simple blocklist de chaînes.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/advisories/GHSA-v6p2-jx9w-8967 ; https://www.cve.org/CVERecord?id=CVE-2026-78077 ; https://www.joomshaper.com/downloads/template/helixultimate/
+
 ### 2026-08-30 — Readest < 0.11.16 — `iframe srcdoc` survivant à la sanitisation EPUB dans un shell Tauri
 
 - **Famille :** `dom-xss`, `sanitizer-bypass`, `srcdoc`, `desktop`, `tauri`
@@ -207,6 +220,7 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-09-01** — Ajout de Helix Ultimate / CVE-2026-78077 : valeurs persistées dans le JSON de MegaMenu rendues dans plusieurs contextes, avec durcissement de l'échappement contextuel et de surfaces voisines dans 2.2.10.
 - **2026-08-31** — Ajout de Readest (document `srcdoc` imbriqué survivant à une configuration DOMPurify trop permissive dans un shell Tauri) et SiYuan (métadonnées persistantes de blocs réutilisées dans plusieurs sinks secondaires : hints, backlinks et breadcrumbs).
 - **2026-08-30** — Ajout de trois familles : Formwork (`Referer` -> statistiques admin), PrivateBin (MIME contrôlé -> `blob:` same-origin) et LiteSpeed Cache (réécriture regex d'attributs `<img>`). La divergence de versions Formwork entre GHSA et CVE est documentée explicitement.
 - **2026-08-28** — Ajout de trois familles significatives : Pocket Android (HTML externe vers WebView avec pont natif), wallabag Android (API vers WebView) et Netron desktop (métadonnées de fichier vers `innerHTML` dans Electron).
