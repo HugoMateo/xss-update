@@ -26,6 +26,34 @@ source: URL
 
 ---
 
+## 2026-09
+
+### 2026-09-01 — league/commonmark < 2.9.1 — filtre `on*` contourné par U+000C FORM FEED
+
+- **Famille :** `stored-xss`, `parser-differential`, `control-character`, `markdown-to-html`, `sanitizer-bypass`
+- **Contexte :** dans `AttributesExtension`, un caractère U+000C FORM FEED placé avant un nom d'attribut empêche les comparaisons de sécurité de reconnaître correctement les attributs commençant par `on` et peut également perturber le contrôle des liens non sûrs. Le caractère reste présent lors du filtrage côté PHP mais est ensuite traité comme un séparateur/whitespace pertinent par le parseur HTML du navigateur.
+- **Produit :** league/commonmark >= 2.7.0 et < 2.9.1 ; corrigé en 2.9.1.
+- **Navigateurs :** navigateurs HTML standards ; l'intérêt vient de la différence de normalisation entre le filtre applicatif et le parseur HTML.
+- **Identifiants :** GHSA-f8fg-pg57-v4j8.
+- **Plateforme / source d'origine :** GitHub Security Advisory thephpleague/commonmark, recoupé avec OSV et la release 2.9.1.
+- **Description non destructive :** dans un convertisseur Markdown de test utilisant `AttributesExtension`, préfixer uniquement un attribut sentinelle inoffensif par U+000C et comparer la chaîne HTML produite avec le DOM réellement construit par le navigateur. Le test doit signaler toute différence de nom/normalisation d'attribut sans exécuter de JavaScript ni utiliser de schéma d'URL actif.
+- **Intérêt corpus :** ajouter une famille `filter normalization -> serializer -> browser parser normalization` couvrant les caractères de contrôle ASCII, en particulier U+000C. Vérifier séparément les noms d'attributs et les valeurs d'URL, car la même divergence peut affecter plusieurs garde-fous. Ce cas est particulièrement utile pour tester les correctifs de blocklist/allowlist après sérialisation et les écarts entre fonctions de trimming côté serveur et définition HTML des espaces.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/thephpleague/commonmark/security/advisories/GHSA-f8fg-pg57-v4j8 ; https://osv.dev/vulnerability/GHSA-f8fg-pg57-v4j8 ; https://github.com/thephpleague/commonmark/releases/tag/2.9.1
+
+### 2026-09-01 — WPBakery Page Builder <= 8.7.4 — sanitisation avant décodage Base64 puis rendu brut
+
+- **Famille :** `stored-xss`, `representation-change`, `decode-after-sanitize`, `wordpress`, `shortcode`
+- **Contexte :** le paramètre `data` du shortcode de HTML brut est sauvegardé sous forme Base64. La sanitisation `wp_kses_post()` intervient alors que le contenu actif est encore représenté comme texte alphanumérique, puis le template `vc_raw_html` décode la valeur au moment du rendu et l'émet sans échappement contextuel suffisant.
+- **Produit :** WPBakery Page Builder <= 8.7.4.
+- **Navigateurs :** navigateurs web standards ; la faiblesse est dans l'ordre des transformations côté application.
+- **Identifiants :** CVE-2026-15101.
+- **Plateforme / source d'origine :** Wordfence CNA / WordPress plugin source, recoupé avec l'enregistrement CVE publié le 1er septembre 2026.
+- **Description non destructive :** dans une installation de test, encoder en Base64 uniquement un fragment HTML sentinelle inoffensif, le faire passer par le chemin de sauvegarde concerné, puis vérifier après décodage si le fragment est réinterprété comme DOM plutôt que comme texte. Ne pas inclure de gestionnaire d'événement, d'URL active ou de JavaScript.
+- **Intérêt corpus :** ajouter un pipeline `encode -> sanitize encoded representation -> persist -> decode -> raw render` et sa variante inverse `decode -> sanitize -> render`. Ce cas permet de détecter les protections appliquées à une représentation qui n'est pas celle finalement interprétée par le navigateur et généralise au-delà de Base64 vers URL encoding, entités, compression ou autres transformations tardives.
+- **Statut :** `à intégrer`
+- **Sources :** https://www.wordfence.com/threat-intel/vulnerabilities/id/b61ced52-30a2-407a-8659-1ae4a4d99aab ; https://www.cve.org/CVERecord?id=CVE-2026-15101 ; https://plugins.trac.wordpress.org/browser/js_composer/trunk/include/templates/shortcodes/vc_raw_html.php#L30
+
 ## 2026-08
 
 ### 2026-08-31 — Helix Ultimate < 2.2.10 — configuration MegaMenu JSON persistée puis rendue dans plusieurs contextes
@@ -220,6 +248,7 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-09-02** — Ajout de deux familles significatives publiées le 1er septembre : league/commonmark (U+000C FORM FEED créant un différentiel entre filtrage d'attributs et parsing HTML) et WPBakery Page Builder (sanitisation appliquée avant décodage Base64, puis rendu brut après changement de représentation).
 - **2026-09-01** — Ajout de Helix Ultimate / CVE-2026-78077 : valeurs persistées dans le JSON de MegaMenu rendues dans plusieurs contextes, avec durcissement de l'échappement contextuel et de surfaces voisines dans 2.2.10.
 - **2026-08-31** — Ajout de Readest (document `srcdoc` imbriqué survivant à une configuration DOMPurify trop permissive dans un shell Tauri) et SiYuan (métadonnées persistantes de blocs réutilisées dans plusieurs sinks secondaires : hints, backlinks et breadcrumbs).
 - **2026-08-30** — Ajout de trois familles : Formwork (`Referer` -> statistiques admin), PrivateBin (MIME contrôlé -> `blob:` same-origin) et LiteSpeed Cache (réécriture regex d'attributs `<img>`). La divergence de versions Formwork entre GHSA et CVE est documentée explicitement.
