@@ -5,7 +5,9 @@ Journal de veille défensive sur les techniques publiques de contournement de WA
 ## Périmètre et règles
 
 - Ne conserver que des techniques publiques, vérifiables et pertinentes pour l'amélioration de règles défensives.
-- Décrire les classes de contournement, causes racines, normalisations et différences de parsing sans archiver de payloads d'évasion prêts à l'emploi.
+- Décrire les classes de contournement, causes racines, normalisations et différences de parsing.
+- Lorsqu'une source publique contient un payload opérationnel, ne pas le recopier tel quel : conserver une **version neutralisée** avec marqueurs sûrs, la **structure/transformation exacte**, le **contexte**, la **source primaire** et, si possible, un **hash** ou identifiant du payload publié pour la traçabilité.
+- Les variantes neutralisées doivent rester suffisantes pour des tests de régression en laboratoire sans constituer une chaîne d'évasion prête à l'emploi.
 - Privilégier les sources primaires : recherches de chercheurs, PortSwigger, advisories fournisseurs, CVE/GHSA, plateformes de bug bounty avec divulgation publique et rapports techniques.
 - Recouper les informations importantes lorsqu'une technique est reprise ailleurs.
 - Dédupliquer par identifiant public ou, à défaut, par famille technique + source primaire.
@@ -21,6 +23,9 @@ produit_waf: nom/version si applicable
 contexte: description courte
 identifiants: []
 plateforme_source: nom
+payload_neutralise: description ou gabarit avec marqueurs sûrs
+payload_hash_ou_reference: valeur si disponible
+transformation: description exacte de la normalisation/encodage/parsing
 statut: nouveau
 source: URL
 ```
@@ -40,3 +45,4 @@ source: URL
 ## Journal de mise à jour
 
 - **2026-09-03** — Initialisation du journal de veille WAF défensive.
+- **2026-09-03** — Ajout d'un format de conservation des payloads publiés sous forme neutralisée, avec structure, transformation et traçabilité (hash/référence) sans stocker de chaîne d'évasion directement opérationnelle.
