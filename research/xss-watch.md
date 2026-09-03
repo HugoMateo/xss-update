@@ -28,6 +28,19 @@ source: URL
 
 ## 2026-09
 
+### 2026-09-01 — enshrined/svg-sanitize <= 0.22.0 — collision sémantique entité DTD XML / référence nommée HTML5
+
+- **Famille :** `stored-xss`, `svg`, `sanitizer-bypass`, `parser-differential`, `xml-to-html`, `representation-change`
+- **Contexte :** le sanitizer valide un attribut `href` après résolution d'une entité DTD dans le contexte XML, puis `saveXML()` peut conserver la référence d'entité dans la sortie tout en supprimant le `DOCTYPE`. Lorsque ce SVG assaini est ensuite inséré inline dans une page HTML, le navigateur réinterprète la même référence selon les règles des références de caractères nommées HTML5, ce qui peut produire une valeur d'URL différente de celle réellement validée.
+- **Produit :** enshrined/svg-sanitize <= 0.22.0 ; corrigé en 1.0.0 d'après l'advisory primaire.
+- **Navigateurs :** exécution confirmée avec Chrome 148 dans l'advisory ; le cas nécessite un SVG rendu inline dans du HTML. Un rendu via `<img src="...svg">` n'est pas affecté par la même mécanique car le document reste parsé comme XML.
+- **Identifiants :** GHSA-9rjx-3jch-6vjf ; aucun CVE attribué au moment de la publication.
+- **Plateforme / source d'origine :** GitHub Security Advisory darylldoyle/svg-sanitizer, signalé par ExPatch Security Research / Denis Rostilov.
+- **Description non destructive :** construire un SVG de test avec une entité DTD dont le nom entre en collision avec une référence de caractère nommée HTML5, mais faire porter l'attribut cible vers une URL sentinelle non active. Comparer trois représentations : valeur vue par le parseur XML pendant la sanitisation, chaîne sérialisée après `saveXML()`, puis valeur effectivement reconstruite dans le DOM HTML après insertion inline. Le test doit uniquement détecter le différentiel de valeur et ne jamais employer de JavaScript exécutable.
+- **Intérêt corpus :** ajouter un pipeline `XML parse/entity resolution -> sanitizer validation -> XML serialization/DOCTYPE removal -> HTML5 named-reference resolution -> URL normalization`. Cette famille couvre une classe de bugs où la protection valide une représentation sémantique différente de celle finalement consommée. Tester en priorité les références nommées produisant des caractères d'espacement/contrôle ignorés ou normalisés par les parseurs d'URL, ainsi que la différence `inline SVG` versus ressource SVG externe.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/darylldoyle/svg-sanitizer/security/advisories/GHSA-9rjx-3jch-6vjf ; https://github.com/darylldoyle/svg-sanitizer/security/advisories
+
 ### 2026-09-01 — league/commonmark < 2.9.1 — filtre `on*` contourné par U+000C FORM FEED
 
 - **Famille :** `stored-xss`, `parser-differential`, `control-character`, `markdown-to-html`, `sanitizer-bypass`
@@ -248,6 +261,7 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-09-03** — Ajout de GHSA-9rjx-3jch-6vjf : collision sémantique entre résolution d'entités DTD en XML pendant la sanitisation SVG et références de caractères nommées HTML5 après sérialisation et insertion inline.
 - **2026-09-02** — Ajout de deux familles significatives publiées le 1er septembre : league/commonmark (U+000C FORM FEED créant un différentiel entre filtrage d'attributs et parsing HTML) et WPBakery Page Builder (sanitisation appliquée avant décodage Base64, puis rendu brut après changement de représentation).
 - **2026-09-01** — Ajout de Helix Ultimate / CVE-2026-78077 : valeurs persistées dans le JSON de MegaMenu rendues dans plusieurs contextes, avec durcissement de l'échappement contextuel et de surfaces voisines dans 2.2.10.
 - **2026-08-31** — Ajout de Readest (document `srcdoc` imbriqué survivant à une configuration DOMPurify trop permissive dans un shell Tauri) et SiYuan (métadonnées persistantes de blocs réutilisées dans plusieurs sinks secondaires : hints, backlinks et breadcrumbs).
