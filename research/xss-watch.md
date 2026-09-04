@@ -28,6 +28,19 @@ source: URL
 
 ## 2026-09
 
+### 2026-09-03 — MapLibre GL JS < 6.4.1 — suppression d'attributs pendant l'itération d'une `NamedNodeMap` live
+
+- **Famille :** `dom-xss`, `sanitizer-bypass`, `live-collection`, `mutation-during-iteration`, `innerhtml`
+- **Contexte :** `DOM.sanitize()` parcourt `elem.attributes`, une collection DOM `NamedNodeMap` vivante, tandis que la routine de nettoyage retire des attributs de cette même collection. La suppression décale immédiatement les indices ; lorsque plusieurs attributs à retirer sont adjacents, l'élément suivant peut être sauté et survivre au nettoyage avant insertion via `innerHTML` dans le contrôle d'attribution de la carte.
+- **Produit :** MapLibre GL JS < 6.4.1 ; corrigé en 6.4.1.
+- **Navigateurs :** navigateurs web standards implémentant les collections DOM vivantes ; le défaut se situe dans l'algorithme de sanitisation côté bibliothèque plutôt que dans une divergence spécifique de moteur.
+- **Identifiants :** CVE-2026-85061 / GHSA-jrc7-96c5-q579.
+- **Plateforme / source d'origine :** GitHub Security Advisory MapLibre / CVE assigné par GitHub, recoupé avec le correctif, la pull request et la release 6.4.1.
+- **Description non destructive :** construire un élément de test comportant plusieurs attributs sentinelles adjacents classés comme interdits par le sanitizer, mais dont les valeurs ne déclenchent aucune action. Comparer la liste statique initiale, la collection `attributes` pendant les suppressions et le DOM obtenu après sanitisation. Le test doit échouer dès qu'un attribut adjacent censé être retiré subsiste, sans utiliser de JavaScript exécutable.
+- **Intérêt corpus :** ajouter une famille `live DOM collection -> mutation during indexed iteration -> skipped adjacent node/attribute -> HTML sink`. Généraliser le test aux `NamedNodeMap`, `HTMLCollection` et `NodeList` vivantes lorsqu'une boucle supprime ou déplace les éléments qu'elle parcourt. Vérifier particulièrement les séquences de 2, 3 et N éléments interdits consécutifs, ainsi que la différence entre copie statique préalable et itération directe sur une collection vivante.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/maplibre/maplibre-gl-js/security/advisories/GHSA-jrc7-96c5-q579 ; https://github.com/maplibre/maplibre-gl-js/pull/8189 ; https://github.com/maplibre/maplibre-gl-js/commit/1da69f3cd913a39fa948708e01478663bf48bc27 ; https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.4.1 ; https://www.cve.org/CVERecord?id=CVE-2026-85061
+
 ### 2026-09-01 — enshrined/svg-sanitize <= 0.22.0 — collision sémantique entité DTD XML / référence nommée HTML5
 
 - **Famille :** `stored-xss`, `svg`, `sanitizer-bypass`, `parser-differential`, `xml-to-html`, `representation-change`
@@ -261,6 +274,7 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-09-04** — Ajout de CVE-2026-85061 / GHSA-jrc7-96c5-q579 : bypass de sanitizer MapLibre GL JS causé par la suppression d'attributs pendant l'itération indexée d'une `NamedNodeMap` live, pouvant faire sauter un attribut interdit adjacent.
 - **2026-09-03** — Ajout de GHSA-9rjx-3jch-6vjf : collision sémantique entre résolution d'entités DTD en XML pendant la sanitisation SVG et références de caractères nommées HTML5 après sérialisation et insertion inline.
 - **2026-09-02** — Ajout de deux familles significatives publiées le 1er septembre : league/commonmark (U+000C FORM FEED créant un différentiel entre filtrage d'attributs et parsing HTML) et WPBakery Page Builder (sanitisation appliquée avant décodage Base64, puis rendu brut après changement de représentation).
 - **2026-09-01** — Ajout de Helix Ultimate / CVE-2026-78077 : valeurs persistées dans le JSON de MegaMenu rendues dans plusieurs contextes, avec durcissement de l'échappement contextuel et de surfaces voisines dans 2.2.10.
