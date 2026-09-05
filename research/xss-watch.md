@@ -41,6 +41,32 @@ source: URL
 - **Statut :** `à intégrer`
 - **Sources :** https://github.com/maplibre/maplibre-gl-js/security/advisories/GHSA-jrc7-96c5-q579 ; https://github.com/maplibre/maplibre-gl-js/pull/8189 ; https://github.com/maplibre/maplibre-gl-js/commit/1da69f3cd913a39fa948708e01478663bf48bc27 ; https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.4.1 ; https://www.cve.org/CVERecord?id=CVE-2026-85061
 
+### 2026-09-02 — DiceBear < 9.4.3 — options supposées numériques interpolées sans échappement dans du SVG
+
+- **Famille :** `svg`, `attribute-boundary`, `type-confusion`, `runtime-validation`, `library-output`
+- **Contexte :** certaines options exposées comme numériques par les types TypeScript étaient interpolées directement dans des attributs SVG sans échappement XML systématique. Un appelant JavaScript peut néanmoins fournir une chaîne à l'exécution, créant un différentiel entre le contrat statique attendu et la valeur réellement sérialisée.
+- **Produit :** `@dicebear/core` et `@dicebear/initials` < 9.4.3 ; corrigés en 9.4.3.
+- **Navigateurs :** navigateurs web standards lorsque le SVG généré est inséré inline ou ouvert comme document SVG ; l'impact dépend du contexte de consommation du SVG produit.
+- **Identifiants :** CVE-2026-68921 / GHSA-gcr2-9v8m-gq45.
+- **Plateforme / source d'origine :** GitHub Security Advisory DiceBear, recoupé avec le commit correctif et la release 9.4.3.
+- **Description non destructive :** appeler le générateur dans un environnement de test avec des chaînes sentinelles contenant uniquement des délimiteurs XML inoffensifs à la place d'options normalement numériques, puis comparer la valeur d'option reçue, la chaîne SVG sérialisée et le DOM SVG reparsé. Le test doit signaler toute création d'un nouvel attribut ou nœud, sans introduire de gestionnaire d'événement, de script ou d'URL active.
+- **Intérêt corpus :** ajouter une famille `static type says scalar -> runtime accepts string -> direct interpolation -> SVG parse`. Couvrir les options numériques, booléennes ou enum supposées sûres par contrat de type mais non validées au runtime, et tester systématiquement la frontière `library string output -> inline SVG / image/svg+xml document`.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/dicebear/dicebear/security/advisories/GHSA-gcr2-9v8m-gq45 ; https://github.com/dicebear/dicebear/commit/922946d738c4e77ab6c412e27ede75941fec4b59 ; https://github.com/dicebear/dicebear/releases/tag/v9.4.3 ; https://www.cve.org/CVERecord?id=CVE-2026-68921
+
+### 2026-09-02 — BookStack < 26.05.4 — contenu non-image stocké puis servi via une route d'image
+
+- **Famille :** `stored-xss`, `svg`, `content-type`, `upload-to-browser`, `trust-boundary`
+- **Contexte :** une route de dessin pouvait conduire au stockage d'un contenu qui n'était pas réellement une image, puis la route de lecture de la galerie le diffusait sans vérifier que le type détecté restait `image/*`. Le correctif centralise le streaming via `DownloadResponseFactory` et refuse les réponses dont le `Content-Type` calculé n'est pas une image.
+- **Produit :** BookStack < 26.05.4 ; corrigé en 26.05.4.
+- **Navigateurs :** navigateurs web standards ; le risque apparaît lorsqu'une ressource stockée est naviguée/rendue comme contenu actif dans l'origine de l'application.
+- **Identifiants :** CVE-2026-84695 / GHSA-r46q-wv4x-rj72.
+- **Plateforme / source d'origine :** BookStack Security Release v26.05.4 et commit correctif `ac0348a`, recoupés avec l'advisory GitHub/NVD publié le 2 septembre.
+- **Description non destructive :** dans une instance locale, faire passer par le chemin de stockage concerné un contenu sentinelle non-image sans script, puis demander la route de lecture de la galerie et vérifier que la réponse est rejetée au lieu d'être rendue comme document. Comparer extension/nom déclaré, type détecté et `Content-Type` effectivement servi.
+- **Intérêt corpus :** ajouter un pipeline `upload/drawing representation -> storage -> gallery stream -> content sniff/type decision -> browser navigation`, et tester séparément validation à l'upload et validation au moment du service. Cette famille couvre les situations où une première couche considère une ressource comme « image » alors qu'une route secondaire la sert avec une sémantique différente.
+- **Statut :** `à intégrer`
+- **Sources :** https://www.bookstackapp.com/blog/bookstack-release-v26-05-4/ ; https://github.com/BookStackApp/BookStack/commit/ac0348a79f3ddd004ca87703948cb9c7d19a420a ; https://github.com/advisories/GHSA-r46q-wv4x-rj72 ; https://www.cve.org/CVERecord?id=CVE-2026-84695
+
 ### 2026-09-01 — enshrined/svg-sanitize <= 0.22.0 — collision sémantique entité DTD XML / référence nommée HTML5
 
 - **Famille :** `stored-xss`, `svg`, `sanitizer-bypass`, `parser-differential`, `xml-to-html`, `representation-change`
@@ -274,6 +300,7 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-09-05** — Ajout de deux familles publiées le 2 septembre : DiceBear / CVE-2026-68921 (contrat de type statique numérique contournable à l'exécution puis interpolation directe dans du SVG) et BookStack / CVE-2026-84695 (contenu non-image stocké puis servi via une route de galerie sans validation finale suffisante du type de contenu).
 - **2026-09-04** — Ajout de CVE-2026-85061 / GHSA-jrc7-96c5-q579 : bypass de sanitizer MapLibre GL JS causé par la suppression d'attributs pendant l'itération indexée d'une `NamedNodeMap` live, pouvant faire sauter un attribut interdit adjacent.
 - **2026-09-03** — Ajout de GHSA-9rjx-3jch-6vjf : collision sémantique entre résolution d'entités DTD en XML pendant la sanitisation SVG et références de caractères nommées HTML5 après sérialisation et insertion inline.
 - **2026-09-02** — Ajout de deux familles significatives publiées le 1er septembre : league/commonmark (U+000C FORM FEED créant un différentiel entre filtrage d'attributs et parsing HTML) et WPBakery Page Builder (sanitisation appliquée avant décodage Base64, puis rendu brut après changement de représentation).
