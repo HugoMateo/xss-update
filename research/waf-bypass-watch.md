@@ -44,6 +44,35 @@ source: URL
 
 ## Entrées
 
+### 2026-09-07 — ash_authentication_oauth2_server < 0.3.1 — alias de chemin contournant des contrôles edge ciblés
+
+```yaml
+date_publication: 2026-09-07
+date_veille: 2026-09-08
+famille: protocol
+produit_waf: WAF, rate limits et contrôles edge appliqués par préfixe de chemin
+contexte: le même sous-routeur OAuth était monté sous un préfixe canonique et sous un préfixe alternatif normalement réservé à la découverte ; le framework retire le préfixe avant dispatch, rendant les mêmes routes internes accessibles sous les deux montages
+identifiants:
+  - CVE-2026-82754
+  - GHSA-wwxg-h779-3wf4
+plateforme_source: Erlang Ecosystem Foundation CNA / GitHub Security Advisory ash-project
+payload_neutralise: requêtes de laboratoire vers <PREFIXE_CANONIQUE>/<ENDPOINT_SENTINELLE> puis <PREFIXE_ALTERNATIF>/<ENDPOINT_SENTINELLE>, avec corps inerte et aucune opération OAuth réelle ; vérifier uniquement si les deux chemins atteignent le même handler et reçoivent des politiques edge différentes
+payload_hash_ou_reference: CVE-2026-82754 ; GHSA-wwxg-h779-3wf4
+transformation: requête HTTP -> matching du préfixe externe -> suppression du préfixe par Phoenix forward -> dispatch dans le même ProtocolRouter -> route interne identique ; si le WAF/rate-limit/auth exemption est attaché uniquement au préfixe canonique, l'alias alternatif contourne la portée de la politique
+statut: nouveau
+source: https://github.com/ash-project/ash_authentication_oauth2_server/security/advisories/GHSA-wwxg-h779-3wf4
+```
+
+**Cause racine.** `oauth2_server_protocol_routes/1` montait le même `ProtocolRouter` sous deux préfixes. Comme `Phoenix.forward` retire le préfixe correspondant avant de déléguer au sous-routeur, l'ensemble de la table de routes internes devenait accessible depuis les deux espaces de chemin. Des protections edge écrites uniquement pour le chemin canonique, ou des règles permissives appliquées au préfixe alternatif, pouvaient donc ne pas s'appliquer à la route équivalente.
+
+**Impact défensif.** Ajouter une famille de tests `canonical path -> alternate mount -> same backend handler -> policy mismatch`. Pour chaque route sensible, comparer le handler atteint, le statut WAF, le rate-limit, l'authentification et la journalisation sous tous les préfixes/alias exposés par le framework. Les contrôles doivent être attachés à la sémantique de la route finale ou normaliser les alias avant décision, plutôt que dépendre uniquement d'une chaîne de chemin externe.
+
+**Version corrigée.** `ash_authentication_oauth2_server` 0.3.1. Le correctif limite le montage alternatif aux seuls documents de découverte et renvoie 404 pour les autres routes.
+
+**Sources.**
+- GitHub Security Advisory, 2026-09-07: https://github.com/ash-project/ash_authentication_oauth2_server/security/advisories/GHSA-wwxg-h779-3wf4
+- Erlang Ecosystem Foundation CNA, 2026-09-07: https://cna.erlef.org/cves/CVE-2026-82754.html
+
 ### 2026-09-01 — All-in-One WP Migration and Backup <= 7.109 — injection SQL de second ordre / angle mort temporel WAF
 
 ```yaml
@@ -79,3 +108,4 @@ source: https://www.wordfence.com/blog/2026/09/5-million-wordpress-sites-affecte
 - **2026-09-03** — Initialisation du journal de veille WAF défensive.
 - **2026-09-03** — Ajout d'un format de conservation des payloads publiés sous forme neutralisée, avec structure, transformation et traçabilité (hash/référence) sans stocker de chaîne d'évasion directement opérationnelle.
 - **2026-09-04** — Ajout de CVE-2026-19949 : injection SQL de second ordre dans All-in-One WP Migration and Backup, retenue comme cas d'angle mort temporel pour les WAF et de divergence entre représentation inspectée et représentation exécutée après transformations applicatives.
+- **2026-09-08** — Ajout de CVE-2026-82754 / GHSA-wwxg-h779-3wf4 : alias de préfixe créé par un montage de sous-routeur Phoenix, permettant à une route sensible d'atteindre le même handler sous un chemin alternatif et de sortir du périmètre de contrôles WAF/rate-limit définis uniquement sur le chemin canonique.
