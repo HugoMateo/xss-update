@@ -28,6 +28,19 @@ source: URL
 
 ## 2026-09
 
+### 2026-09-07 — JetBrains YouTrack < 2026.2.18634 — nom d'assigné persisté interprété comme template AngularJS
+
+- **Famille :** `stored-xss`, `client-template-injection`, `angularjs`, `data-to-template`, `secondary-renderer`
+- **Contexte :** un nom d'assigné contrôlable et persisté pouvait atteindre une surface de rendu AngularJS où la donnée était interprétée comme contenu de template plutôt que comme texte inerte, conduisant à une XSS stockée. Le point distinctif n'est donc pas une simple insertion HTML : une valeur métier supposée textuelle traverse une frontière `data -> client-side template expression`.
+- **Produit :** JetBrains YouTrack < 2026.2.18634 ; corrigé à partir de 2026.2.18634.
+- **Navigateurs :** navigateurs web standards exécutant le frontend AngularJS de YouTrack ; aucune divergence de moteur spécifique n'est indiquée par le bulletin public.
+- **Identifiants :** CVE-2026-86484.
+- **Plateforme / source d'origine :** JetBrains CNA / bulletin « Fixed security issues », recoupé avec l'enregistrement CVE publié le 7 septembre 2026.
+- **Description non destructive :** dans une instance de test autorisée, donner à un objet représentant l'assigné une valeur sentinelle contenant uniquement une expression AngularJS inoffensive produisant un texte fixe, puis vérifier séparément la valeur persistée, le texte injecté dans le template et le DOM final. Le test doit échouer dès que la sentinelle est évaluée comme expression au lieu d'être rendue littéralement ; ne pas appeler de fonction, d'API navigateur ou de ressource externe.
+- **Intérêt corpus :** ajouter une famille `persistent business field -> AngularJS template compilation/interpolation -> DOM`, distincte des sinks HTML classiques. Tester les champs de nom/libellé supposés textuels lorsqu'ils sont réutilisés dans des templates côté client, et comparer trois états : valeur brute, source de template générée, DOM après compilation. Ajouter une variante de contrôle où les délimiteurs de template doivent rester visibles comme texte, ce qui permet de détecter une régression sans JavaScript actif.
+- **Statut :** `à intégrer`
+- **Sources :** https://www.jetbrains.com/privacy-security/issues-fixed/ ; https://www.cve.org/CVERecord?id=CVE-2026-86484
+
 ### 2026-09-03 — MapLibre GL JS < 6.4.1 — suppression d'attributs pendant l'itération d'une `NamedNodeMap` live
 
 - **Famille :** `dom-xss`, `sanitizer-bypass`, `live-collection`, `mutation-during-iteration`, `innerhtml`
@@ -300,6 +313,7 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-09-08** — Ajout de CVE-2026-86484 : XSS stockée dans JetBrains YouTrack via interprétation AngularJS d'un nom d'assigné persisté, retenue comme famille `business data -> client-side template expression -> DOM`.
 - **2026-09-05** — Ajout de deux familles publiées le 2 septembre : DiceBear / CVE-2026-68921 (contrat de type statique numérique contournable à l'exécution puis interpolation directe dans du SVG) et BookStack / CVE-2026-84695 (contenu non-image stocké puis servi via une route de galerie sans validation finale suffisante du type de contenu).
 - **2026-09-04** — Ajout de CVE-2026-85061 / GHSA-jrc7-96c5-q579 : bypass de sanitizer MapLibre GL JS causé par la suppression d'attributs pendant l'itération indexée d'une `NamedNodeMap` live, pouvant faire sauter un attribut interdit adjacent.
 - **2026-09-03** — Ajout de GHSA-9rjx-3jch-6vjf : collision sémantique entre résolution d'entités DTD en XML pendant la sanitisation SVG et références de caractères nommées HTML5 après sérialisation et insertion inline.
