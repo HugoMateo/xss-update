@@ -41,6 +41,19 @@ source: URL
 - **Statut :** `à intégrer`
 - **Sources :** https://www.jetbrains.com/privacy-security/issues-fixed/ ; https://www.cve.org/CVERecord?id=CVE-2026-86484
 
+### 2026-09-07 — MISP <= 2.5.45 — divergence de parsing d'URL PHP / navigateur dans les widgets Dashboard
+
+- **Famille :** `stored-xss`, `parser-differential`, `url-normalization`, `href`, `dashboard-widget`
+- **Contexte :** l'URL d'un Button widget est une configuration persistée contrôlable par un utilisateur. L'ancienne validation acceptait une URL si elle paraissait relative ou si le hostname retourné côté PHP correspondait à l'hôte MISP, sans rejeter certaines formes que le parseur WHATWG du navigateur normalise différemment. Le correctif amont mentionne explicitement les schémas dangereux et les formes contenant des antislashs qui pouvaient atteindre le `href` rendu.
+- **Produit :** MISP <= 2.5.45 ; correctif amont dans le commit `adf704e949e6212e1bd22b2af9d124dc6578a399`.
+- **Navigateurs :** navigateurs web modernes appliquant les règles de parsing/normalisation d'URL WHATWG ; aucune divergence moteur particulière n'est requise pour la famille de test.
+- **Identifiants :** CVE-2026-86440 / GHSA-m9p6-76x3-7vxp.
+- **Plateforme / source d'origine :** MISP / CIRCL, signalé par Scottish Government - National Cyber Team ; recoupé avec le commit correctif amont.
+- **Description non destructive :** utiliser uniquement des URL sentinelles inertes vers un domaine réservé ou inexistant et comparer quatre états : chaîne brute enregistrée, résultat du parseur URL côté serveur, valeur exacte émise dans `href`, puis URL normalisée par le navigateur. Inclure des variantes avec séparateurs et antislashs sans schéma actif, et considérer le test en échec dès que le navigateur aboutit à une origine ou une structure différente de celle autorisée côté serveur.
+- **Intérêt corpus :** ajouter un pipeline `stored URL config -> server-side URL parser/allowlist -> HTML href serialization -> WHATWG browser URL parser`. Couvrir la normalisation des antislashs, caractères de contrôle, formes protocol-relative, différences d'autorité et validation d'origine. Tester aussi la défense en profondeur : validation au handler du widget puis à nouveau au renderer, afin qu'une valeur dangereuse ne puisse pas être réintroduite par un consommateur secondaire.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/MISP/MISP/commit/adf704e949e6212e1bd22b2af9d124dc6578a399 ; https://www.cve.org/CVERecord?id=CVE-2026-86440 ; https://github.com/advisories/GHSA-m9p6-76x3-7vxp
+
 ### 2026-09-03 — MapLibre GL JS < 6.4.1 — suppression d'attributs pendant l'itération d'une `NamedNodeMap` live
 
 - **Famille :** `dom-xss`, `sanitizer-bypass`, `live-collection`, `mutation-during-iteration`, `innerhtml`
@@ -313,6 +326,7 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-09-09** — Ajout de CVE-2026-86440 / GHSA-m9p6-76x3-7vxp : MISP Dashboard Button widget, divergence entre validation/parsing d'URL côté PHP et normalisation WHATWG du navigateur, notamment autour des antislashs et des schémas, retenue comme famille `stored URL -> server parser -> href -> browser parser`.
 - **2026-09-08** — Ajout de CVE-2026-86484 : XSS stockée dans JetBrains YouTrack via interprétation AngularJS d'un nom d'assigné persisté, retenue comme famille `business data -> client-side template expression -> DOM`.
 - **2026-09-05** — Ajout de deux familles publiées le 2 septembre : DiceBear / CVE-2026-68921 (contrat de type statique numérique contournable à l'exécution puis interpolation directe dans du SVG) et BookStack / CVE-2026-84695 (contenu non-image stocké puis servi via une route de galerie sans validation finale suffisante du type de contenu).
 - **2026-09-04** — Ajout de CVE-2026-85061 / GHSA-jrc7-96c5-q579 : bypass de sanitizer MapLibre GL JS causé par la suppression d'attributs pendant l'itération indexée d'une `NamedNodeMap` live, pouvant faire sauter un attribut interdit adjacent.
