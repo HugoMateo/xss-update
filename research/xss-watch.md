@@ -28,6 +28,19 @@ source: URL
 
 ## 2026-09
 
+### 2026-09-11 — Dobase < 2026.06.03 — échappement serveur annulé par `dataset` puis second parsing via `innerHTML`
+
+- **Famille :** `stored-xss`, `dom-xss`, `representation-change`, `dataset`, `innerhtml`, `double-parse`
+- **Contexte :** le nom persistant d'un fichier est correctement échappé par ERB lorsqu'il est sérialisé dans un attribut `data-name`. Le navigateur décode ensuite les entités HTML lors de la construction du DOM ; une lecture via `el.dataset.name` récupère donc la valeur textuelle décodée. Cette valeur est finalement interpolée sans nouvel échappement dans deux écritures `innerHTML` du contrôleur Stimulus de la galerie publique, créant un second parsing HTML qui annule la protection appliquée au premier contexte.
+- **Produit :** Dobase <= 2026.05.29 ; corrigé en 2026.06.03.
+- **Navigateurs :** navigateurs web standards ; la famille repose sur le comportement normal de décodage des attributs HTML par le DOM puis sur un second parsing par `innerHTML`, sans divergence moteur spécifique.
+- **Identifiants :** CVE-2026-54165 / GHSA-m95v-4xq6-grhg.
+- **Plateforme / source d'origine :** GitHub Security Advisory `smgdkngt/dobase`, publié initialement le 3 juin 2026 et nouvellement indexé comme CVE le 11 septembre 2026 ; recoupé avec le code vulnérable et la version corrigée documentés dans l'advisory primaire.
+- **Description non destructive :** utiliser comme nom de fichier une sentinelle contenant uniquement des délimiteurs HTML inoffensifs destinés à produire un nœud neutre. Comparer quatre états : HTML serveur avec entités échappées dans `data-name`, valeur obtenue par `getAttribute`, valeur obtenue par `dataset.name`, puis DOM après le chemin de rendu de la lightbox. Le test doit échouer si la sentinelle, initialement protégée dans l'attribut, devient un nouveau nœud lors de la seconde interprétation ; ne pas employer de gestionnaire d'événement, de script ou de ressource externe.
+- **Intérêt corpus :** ajouter un pipeline `untrusted string -> server attribute escaping -> HTML parse/entity decode -> dataset read -> template interpolation -> innerHTML reparse`. Cette famille permet de détecter les protections contextuelles valides à une première frontière mais rendues caduques lorsque la donnée est extraite du DOM puis réutilisée dans un sink de parsing. Généraliser aux attributs `data-*`, aux propriétés DOM qui renvoient des valeurs décodées et aux chaînes transférées d'un contexte attribut vers un contexte HTML.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/smgdkngt/dobase/security/advisories/GHSA-m95v-4xq6-grhg ; https://www.cve.org/CVERecord?id=CVE-2026-54165
+
 ### 2026-09-07 — JetBrains YouTrack < 2026.2.18634 — nom d'assigné persisté interprété comme template AngularJS
 
 - **Famille :** `stored-xss`, `client-template-injection`, `angularjs`, `data-to-template`, `secondary-renderer`
@@ -326,6 +339,7 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-09-15** — Ajout de CVE-2026-54165 / GHSA-m95v-4xq6-grhg : Dobase, échappement correct dans un attribut `data-*` puis décodage par le DOM et réinjection de la valeur via `innerHTML`, retenu comme famille `server attribute escape -> DOM decode -> dataset -> innerHTML reparse`.
 - **2026-09-09** — Ajout de CVE-2026-86440 / GHSA-m9p6-76x3-7vxp : MISP Dashboard Button widget, divergence entre validation/parsing d'URL côté PHP et normalisation WHATWG du navigateur, notamment autour des antislashs et des schémas, retenue comme famille `stored URL -> server parser -> href -> browser parser`.
 - **2026-09-08** — Ajout de CVE-2026-86484 : XSS stockée dans JetBrains YouTrack via interprétation AngularJS d'un nom d'assigné persisté, retenue comme famille `business data -> client-side template expression -> DOM`.
 - **2026-09-05** — Ajout de deux familles publiées le 2 septembre : DiceBear / CVE-2026-68921 (contrat de type statique numérique contournable à l'exécution puis interpolation directe dans du SVG) et BookStack / CVE-2026-84695 (contenu non-image stocké puis servi via une route de galerie sans validation finale suffisante du type de contenu).
