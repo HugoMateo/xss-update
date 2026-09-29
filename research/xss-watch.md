@@ -28,6 +28,33 @@ source: URL
 
 ## 2026-09
 
+### 2026-09-25 — code16/Sharp < 9.22.5 — `data-html-content` franchissant la frontière du sanitizer
+
+- **Famille :** `stored-xss`, `sanitizer-bypass`, `data-attribute`, `editor`, `trust-boundary`
+- **Contexte :** dans `SharpEditorFormField`, du contenu contrôlé portant l'attribut `data-html-content` pouvait conserver du HTML qui échappait au chemin normal de sanitisation, puis être stocké et rendu ultérieurement. Le correctif 9.22.5 réserve désormais explicitement ce comportement au mode `RAW_HTML`, qui requiert une sanitisation applicative volontaire.
+- **Produit :** code16/Sharp < 9.22.5 ; corrigé en 9.22.5.
+- **Navigateurs :** navigateurs web standards ; aucune divergence moteur particulière n'est nécessaire.
+- **Identifiants :** CVE-2026-61825 / GHSA-vj3q-vp3g-j9c8.
+- **Plateforme / source d'origine :** GitHub Security Advisory code16/Sharp, recoupé avec OSV/GitLab Advisory Database et le correctif amont.
+- **Description non destructive :** utiliser un fragment d'éditeur contenant `data-html-content` et uniquement un élément sentinelle inerte. Comparer le DOM d'entrée, la sortie du sanitizer, la représentation persistée et le rendu final. Le test doit échouer si un nœud sentinelle normalement supprimé réapparaît après la frontière `data-html-content`, sans gestionnaire d'événement, script ou ressource externe.
+- **Intérêt corpus :** ajouter un pipeline `rich-text DOM -> sanitizer -> privileged data-* carrier -> persistence -> render`. Tester les attributs de métadonnées qui demandent implicitement à une couche ultérieure de réinterpréter une chaîne comme HTML, ainsi que la différence entre mode HTML sûr par défaut et mode RAW explicitement opt-in.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/code16/sharp/security/advisories/GHSA-vj3q-vp3g-j9c8 ; https://github.com/code16/sharp/commit/ec509a22c808a5bd9dfad6a0a85c92ce6f411e21 ; https://osv.dev/vulnerability/GHSA-vj3q-vp3g-j9c8
+
+### 2026-09-24 — xhtml-purifier < 0.4.3 — sanitizer correct avant sérialisation, puis injection à la frontière d'attribut
+
+- **Famille :** `sanitizer-bypass`, `serializer`, `attribute-boundary`, `representation-change`
+- **Contexte :** `xhtml-purifier` purifie la structure HTML mais, avant 0.4.3, `attributeString()` concaténait directement certaines valeurs d'attribut dans une chaîne entourée de guillemets doubles sans encodage HTML final. Une valeur pourtant attachée à un attribut autorisé pouvait donc changer la structure du HTML seulement au moment de la sérialisation.
+- **Produit :** npm `xhtml-purifier` < 0.4.3 ; corrigé en 0.4.3.
+- **Navigateurs :** navigateurs HTML standards ; la faiblesse se produit avant le parsing navigateur et ne dépend pas d'un moteur particulier.
+- **Identifiants :** CVE-2026-61784 / GHSA-j8r4-32c5-33rc.
+- **Plateforme / source d'origine :** GitHub Security Advisory / GitHub CNA, recoupé avec OSV, le commit correctif et la release 0.4.3.
+- **Description non destructive :** placer dans un attribut autorisé une valeur sentinelle contenant un délimiteur de guillemet suivi uniquement d'un attribut neutre. Comparer le modèle purifié avant sérialisation, la chaîne HTML produite puis le DOM reparsé. Le test doit signaler toute création d'un second attribut sans employer d'événement, de script ni d'URL active.
+- **Intérêt corpus :** ajouter un pipeline `parse -> sanitize DOM/model -> serialize attributes -> browser reparse` et distinguer explicitement sécurité du modèle interne et sécurité de la représentation sérialisée. Couvrir `class`, `style`, `title`, `alt`, `src` et `href` avec délimiteurs sentinelles, ainsi que les variantes de guillemets et d'encodage.
+- **Statut :** `à intégrer`
+- **Sources :** https://github.com/cstigler/node-xhtml-purifier/security/advisories/GHSA-j8r4-32c5-33rc ; https://github.com/cstigler/node-xhtml-purifier/commit/21d461ad23e7bc9b3073693d5b51b9b8662044d3 ; https://osv.dev/vulnerability/GHSA-j8r4-32c5-33rc
+
+
 ### 2026-09-11 — Dobase < 2026.06.03 — échappement serveur annulé par `dataset` puis second parsing via `innerHTML`
 
 - **Famille :** `stored-xss`, `dom-xss`, `representation-change`, `dataset`, `innerhtml`, `double-parse`
@@ -338,6 +365,8 @@ source: URL
 ---
 
 ## Journal de mise à jour
+
+- **2026-09-29** — Ajout de CVE-2026-61784 / GHSA-j8r4-32c5-33rc (xhtml-purifier : rupture de frontière d'attribut lors de la sérialisation après sanitisation) et CVE-2026-61825 / GHSA-vj3q-vp3g-j9c8 (Sharp : `data-html-content` comme transport privilégié de HTML à travers le sanitizer).
 
 - **2026-09-15** — Ajout de CVE-2026-54165 / GHSA-m95v-4xq6-grhg : Dobase, échappement correct dans un attribut `data-*` puis décodage par le DOM et réinjection de la valeur via `innerHTML`, retenu comme famille `server attribute escape -> DOM decode -> dataset -> innerHTML reparse`.
 - **2026-09-09** — Ajout de CVE-2026-86440 / GHSA-m9p6-76x3-7vxp : MISP Dashboard Button widget, divergence entre validation/parsing d'URL côté PHP et normalisation WHATWG du navigateur, notamment autour des antislashs et des schémas, retenue comme famille `stored URL -> server parser -> href -> browser parser`.
