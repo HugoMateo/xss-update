@@ -44,6 +44,30 @@ source: URL
 
 ## Entrées
 
+### 2026-10-04 — JavaScript à identifiants cunéiformes — obfuscation Unicode et coercions implicites contre inspection lexicale WAF
+
+```yaml
+date_publication: 2026-10-04
+date_veille: 2026-10-04
+famille: encoding
+produit_waf: WAF/filtres XSS fondés sur signatures lexicales ASCII ou tokenisation Unicode incomplète
+contexte: payload JavaScript public utilisant des caractères cunéiformes Unicode comme identifiants valides et reconstruisant dynamiquement des chaînes à partir de coercions JavaScript, afin de réduire la présence de mots-clés ASCII caractéristiques dans la représentation inspectée
+identifiants: []
+plateforme_source: X / publication publique fournie par l'utilisateur
+payload_neutralise: même graphe d'affectations avec identifiants cunéiformes et mêmes primitives de coercion, mais terminaison remplacée par <SENTINELLE_INERTE> ; vérifier uniquement la chaîne reconstruite
+payload_hash_ou_reference: X status 2105654858015457541
+transformation: source Unicode -> tokenisation ECMAScript des identifiants non-ASCII -> coercions implicites booléen/objet vers chaînes -> extraction de caractères par index -> concaténation dynamique -> résolution de propriété calculée ; étape d'exécution terminale supprimée du cas de régression
+statut: nouveau
+source: https://x.com/i/status/2105654858015457541
+```
+
+**Cause racine.** Un filtre fondé principalement sur des mots-clés, noms de variables ou motifs ASCII peut sous-estimer un programme JavaScript valide dont les identifiants proviennent d'autres blocs Unicode. La reconstruction de chaînes par coercions natives et indexation signifie aussi que les jetons significatifs n'existent pas nécessairement sous forme contiguë dans la requête inspectée. La technique relève d'un écart entre détection lexicale et sémantique ECMAScript.
+
+**Impact défensif.** Ajouter une famille de tests `Unicode identifier -> ECMAScript tokenization -> implicit coercion -> character extraction -> computed property`, en conservant les identifiants cunéiformes mais en arrêtant le programme avant tout sink exécutable. Comparer représentation brute, tokens d'un parseur ECMAScript et chaîne sentinelle reconstruite.
+
+**Source.** X status `2105654858015457541`, fourni directement pour intégration au corpus : https://x.com/i/status/2105654858015457541
+
+
 ### 2026-09-07 — ash_authentication_oauth2_server < 0.3.1 — alias de chemin contournant des contrôles edge ciblés
 
 ```yaml
@@ -104,6 +128,8 @@ source: https://www.wordfence.com/blog/2026/09/5-million-wordpress-sites-affecte
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-04** — Ajout du cas public X `2105654858015457541` : obfuscation JavaScript par identifiants cunéiformes Unicode et reconstruction de chaînes via coercions/indexation. La terminaison exécutable a été neutralisée ; le corpus conserve la structure lexicale et les transformations pour régression WAF.
 
 - **2026-09-03** — Initialisation du journal de veille WAF défensive.
 - **2026-09-03** — Ajout d'un format de conservation des payloads publiés sous forme neutralisée, avec structure, transformation et traçabilité (hash/référence) sans stocker de chaîne d'évasion directement opérationnelle.
