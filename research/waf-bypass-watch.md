@@ -68,6 +68,28 @@ source: https://x.com/i/status/2105654858015457541
 **Source.** X status `2105654858015457541`, fourni directement pour intégration au corpus : https://x.com/i/status/2105654858015457541
 
 
+### 2026-09-17 — Quarkus — désaccord de normalisation des chemins
+
+```yaml
+date_publication: 2026-09-17
+date_veille: 2026-10-09
+famille: parser-differential
+produit_waf: contrôles de chemin en amont de Quarkus ; aucun WAF spécifique confirmé vulnérable
+contexte: le composant d'autorisation et le routeur HTTP ne normalisent pas toujours le chemin de façon identique
+identifiants: [CVE-2026-87743, GHSA-pw2v-hfg7-72m6]
+plateforme_source: Red Hat Product Security
+payload_neutralise: deux chemins factices de laboratoire, sans endpoint sensible, pour comparer la décision de politique et le handler final
+payload_hash_ou_reference: CVE-2026-87743
+transformation: représentation du chemin à l'entrée -> contrôle d'autorisation -> routage ; divergence de représentation canonique
+statut: nouveau
+source: https://access.redhat.com/security/cve/CVE-2026-87743
+```
+
+**Cause racine.** Une divergence entre les représentations de chemin utilisées par les règles d'accès et le dispatcher HTTP. Le bulletin public ne documente pas les octets exacts qui déclenchent le défaut.
+
+**Impact défensif.** Comparer en laboratoire les décisions d'autorisation et la destination finale de chemins sentinelles, et imposer une canonicalisation cohérente avant toute décision de sécurité. Il s'agit d'une famille pertinente pour les politiques WAF/edge, sans preuve d'une faille dans un WAF particulier.
+
+**Sources.** https://access.redhat.com/security/cve/CVE-2026-87743 ; https://www.ibm.com/support/pages/node/7289050
 ### 2026-09-07 — ash_authentication_oauth2_server < 0.3.1 — alias de chemin contournant des contrôles edge ciblés
 
 ```yaml
@@ -129,6 +151,7 @@ source: https://www.wordfence.com/blog/2026/09/5-million-wordpress-sites-affecte
 
 ## Journal de mise à jour
 
+- **2026-10-09** — Quarkus CVE-2026-87743 : divergence de canonicalisation entre règle d'autorisation et routage HTTP, conservée comme cas de régression edge non destructif.
 - **2026-10-04** — Ajout du cas public X `2105654858015457541` : obfuscation JavaScript par identifiants cunéiformes Unicode et reconstruction de chaînes via coercions/indexation. La terminaison exécutable a été neutralisée ; le corpus conserve la structure lexicale et les transformations pour régression WAF.
 
 - **2026-09-03** — Initialisation du journal de veille WAF défensive.
