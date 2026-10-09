@@ -538,6 +538,8 @@ source: URL
 
 ## Journal de mise à jour
 
+- **2026-10-09** — Ajout de GHSA-6688-9rhm-gjv2 : retour d'une racine raw-text exclue en mode IN_PLACE, avec régression de parsing non destructif.
+
 - **2026-10-09** — Ajout de GHSA-p98j-92pf-mc4p : défaut de neutralisation de sous-arbres dans les hooks afterSanitize de DOMPurify IN_PLACE, avec test sentinelle inerte.
 
 - **2026-10-09** — Ajout de Handlebars CVE-2026-106444 (précompilation JavaScript puis frontière de parsing HTML inline) et JHipster CVE-2026-107303 (MIME Blob persisté puis document `blob:`), avec régressions non destructives et sources primaires.
