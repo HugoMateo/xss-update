@@ -28,6 +28,22 @@ source: URL
 
 ## 2026-10 — divulgations et indexations vérifiées
 
+### 2026-10-08 — Go html/template — état de contexte incorrect entre expressions successives
+
+- **Date de publication :** 2026-10-08.
+- **Date de veille :** 2026-10-09.
+- **Famille :** parser-differential, sanitizer.
+- **Contexte :** le suivi de contexte de html/template n'était pas réinitialisé entre expressions successives d'un template literal JavaScript, provoquant une mauvaise reconnaissance de littéraux regex et un échappement incorrect.
+- **Produit :** Go html/template avant go1.26.9 ; branche go1.27 avant go1.27.2.
+- **Navigateurs :** moteurs ECMAScript avec prise en charge des template literals ; non précisés.
+- **Identifiants :** CVE-2026-94448 ; GO-2026-6599.
+- **Plateforme / source d'origine :** Go Vulnerability Database.
+- **Description non destructive :** comparer les sorties d'un template local avec des marqueurs textuels inertes et deux expressions successives, sur versions corrigées et non corrigées, sans injection de code exécutable.
+- **Intérêt corpus :** HTML template -> JS template literal -> expression boundary -> context reset -> regex tokenization -> escaping.
+- **Statut :** à intégrer.
+- **Sources :** https://pkg.go.dev/vuln/GO-2026-6599 ; https://go.dev/cl/839866
+
+
 ### 2026-09-18 — Payload CMS < 3.90.0 — contrôle SVG contourné selon l'identité et le chemin de téléversement (indexé 2026-10-07)
 
 - **Date de publication :** 2026-09-18 (advisory primaire ; indexation secondaire 2026-10-07).
@@ -489,6 +505,8 @@ source: URL
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-09** — Ajout de CVE-2026-94448 : réinitialisation du contexte dans Go html/template, cas de régression inerte.
 
 - **2026-10-09** — Ajout de 2 cas supplémentaires vérifiés et dédupliqués : Payload CMS CVE-2026-105862 (validation SVG sur tous les chemins de téléversement, distincte de XML/XSL CVE-2026-105868) et Ghost CVE-2026-105649 (miniatures SVG et discordance extension/contenu, distincte du bookmark CVE-2026-105651). Tests de régression inertes, sources et correctifs primaires ; dates de publication et d'indexation distinguées.
 
