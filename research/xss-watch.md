@@ -28,6 +28,38 @@ source: URL
 
 ## 2026-10 — divulgations et indexations vérifiées
 
+### 2026-10-08 — JHipster — ContentType de Blob persisté puis réutilisé dans un document `blob:` de même origine
+
+- **Date de publication :** 2026-10-08 (GHSA/OSV).
+- **Date de veille :** 2026-10-09.
+- **Famille :** stored-xss, dom-xss, autre (MIME / blob origin).
+- **Contexte :** les applications générées peuvent stocker des champs Blob avec une propriété `ContentType` contrôlée par un utilisateur disposant du droit d'écriture. Le helper client généré `openFile` réutilise ce MIME pour créer un `Blob`, puis ouvre son URL `blob:` dans une nouvelle fenêtre. Un contenu interprétable comme document actif peut alors se retrouver dans un contexte d'origine applicative selon CSP et navigateur.
+- **Produit :** generator-jhipster < 9.4.0 (exemple analysé : 9.2.0), react-jhipster < 1.1.0 ; corrigés respectivement en 9.4.0 et 1.1.0. Les applications déjà générées doivent être auditées/corrigées indépendamment de la version du générateur installée.
+- **Navigateurs :** non spécifiés ; comportement `blob:`, origine et CSP à confirmer sur Chromium, Firefox et WebKit dans le laboratoire.
+- **Identifiants :** CVE-2026-107303 ; GHSA-9ffp-22j7-56r2.
+- **Plateforme / source d'origine :** advisory fournisseur JHipster / GitHub Security Advisory ; recoupement OSV et correctif fournisseur.
+- **Description non destructive :** créer une entité de laboratoire avec champ Blob contenant uniquement une chaîne sentinelle et un `ContentType` déclaré discordant. Observer persistance REST, valeur retournée, `Blob.type`, création d'URL objet et origine/document résultants, sans contenu actif ni appel d'API privilégiée. Tester les combinaisons MIME permis/refusés et la CSP.
+- **Intérêt corpus :** `authenticated entity write -> Blob bytes + user-controlled ContentType -> persistence -> REST -> generated UI openFile -> Blob MIME -> object URL -> document origin/CSP`. Distinct de PrivateBin : défaut introduit par des templates de générateur et propagation d'une métadonnée MIME persistée à travers API et composants Angular/React/Vue.
+- **Statut :** à intégrer.
+- **Sources :** https://github.com/jhipster/generator-jhipster/security/advisories/GHSA-9ffp-22j7-56r2 ; correctif : https://github.com/jhipster/generator-jhipster/commit/efe95edd4dedc3379735094936439410a51ce3d9 ; https://osv.dev/vulnerability/GHSA-9ffp-22j7-56r2
+
+
+### 2026-10-05 — Handlebars < 4.7.10 — JavaScript précompilé sûr isolément, mais rupture de frontière HTML `<script>` (indexé 2026-10-08)
+
+- **Date de publication :** 2026-10-05 (advisory fournisseur ; publication GHSA/OSV le 2026-10-08).
+- **Date de veille :** 2026-10-09.
+- **Famille :** parser-differential, sanitizer, autre (sérialisation contextuelle).
+- **Contexte :** `Handlebars.precompile()` générait du code JavaScript dans lequel le texte statique était échappé pour une chaîne JavaScript, mais non pour l'intégration dans un élément HTML `script`. Le parseur HTML interprète la séquence de fermeture de `script` même lorsqu'elle figure dans une chaîne JavaScript, ce qui peut changer les frontières du document lorsque du code précompilé issu d'un modèle non fiable est intégré inline.
+- **Produit :** handlebars >= 4.0.0 et <= 4.7.9 ; corrigé en 4.7.10.
+- **Navigateurs :** parseurs HTML des navigateurs modernes ; moteur et versions spécifiques non précisés.
+- **Identifiants :** CVE-2026-106444 ; GHSA-xw65-4hp5-5hc7.
+- **Plateforme / source d'origine :** advisory fournisseur handlebars-lang / GitHub Security Advisory ; recoupement OSV.
+- **Description non destructive :** compiler un modèle contenant uniquement un texte sentinelle et un délimiteur HTML de fermeture de `script` sans balise active ni gestionnaire d'événement. Comparer le JavaScript généré par versions vulnérable/corrigée ; dans un document HTML de laboratoire, analyser les nœuds résultants avec un parseur HTML sans exécuter de JavaScript. Vérifier que le délimiteur ne peut pas interrompre le bloc inline.
+- **Intérêt corpus :** `untrusted template text -> precompile -> JavaScript string serialization -> inline HTML script-data state -> HTML parser boundary`. Régression sur la différence entre échappement JavaScript et échappement pour inclusion HTML, sans supposer qu'un fichier JS externe est affecté.
+- **Statut :** à intégrer.
+- **Sources :** https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-xw65-4hp5-5hc7 ; correctif : https://github.com/handlebars-lang/handlebars.js/commit/609d1b11c833c9a3e00f56f2f34d22f425446725 ; https://osv.dev/vulnerability/GHSA-xw65-4hp5-5hc7
+
+
 ### 2026-10-08 — Go html/template — état de contexte incorrect entre expressions successives
 
 - **Date de publication :** 2026-10-08.
@@ -505,6 +537,8 @@ source: URL
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-09** — Ajout de Handlebars CVE-2026-106444 (précompilation JavaScript puis frontière de parsing HTML inline) et JHipster CVE-2026-107303 (MIME Blob persisté puis document `blob:`), avec régressions non destructives et sources primaires.
 
 - **2026-10-09** — Ajout de CVE-2026-94448 : réinitialisation du contexte dans Go html/template, cas de régression inerte.
 
