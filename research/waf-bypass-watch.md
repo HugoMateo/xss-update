@@ -44,6 +44,54 @@ source: URL
 
 ## Entrées
 
+### 2026-09 — Envoy — segments dot/dotdot avec paramètres de chemin
+
+```yaml
+date_publication: 2026-09
+date_veille: 2026-10-09
+famille: normalization
+produit_waf: "Envoy proxy, versions corrigées 1.39.1 / 1.38.4 / 1.37.6 / 1.36.10"
+contexte: "normalisation d'URL ne reconnaissant pas les paramètres de segment RFC 3986 sur des segments dot/dotdot ; l'amont peut interpréter un chemin canonique différent"
+identifiants: [GHSA-2w8w-rfw7-8gg4]
+plateforme_source: GitHub Security Advisory / fournisseur
+payload_neutralise: "comparer dans un laboratoire des chemins sentinelles contenant un segment relatif muni d'un paramètre fictif, et relever chemin vu par Envoy, route sélectionnée et chemin canonique côté backend ; aucun endpoint sensible"
+payload_hash_ou_reference: GHSA-2w8w-rfw7-8gg4
+transformation: "normalisation d'URL ne reconnaissant pas les paramètres de segment RFC 3986 sur des segments dot/dotdot ; l'amont peut interpréter un chemin canonique différent"
+statut: nouveau
+source: https://github.com/envoyproxy/envoy/security/advisories/GHSA-2w8w-rfw7-8gg4
+```
+
+**Cause racine.** normalisation d'URL ne reconnaissant pas les paramètres de segment RFC 3986 sur des segments dot/dotdot ; l'amont peut interpréter un chemin canonique différent.
+
+**Impact défensif.** Tester la cohérence de canonicalisation et de RBAC entre proxy et application ; aligner normalisation et règles de routage.
+
+**Sources.** https://github.com/envoyproxy/envoy/security/advisories/GHSA-2w8w-rfw7-8gg4
+
+
+### 2026-10-08 — Coraza < 3.8.0 — décodage octal JavaScript incorrect
+
+```yaml
+date_publication: 2026-10-08
+date_veille: 2026-10-09
+famille: encoding
+produit_waf: "Coraza WAF >=3.0.0 <3.8.0"
+contexte: "t:jsDecode inclut par erreur l'antislash dans le tampon numérique octal ; ParseInt échoue et produit un octet NUL plutôt que le caractère attendu"
+identifiants: [CVE-2026-104774]
+plateforme_source: GitHub Security Advisory / fournisseur
+payload_neutralise: "utiliser une échappement octal représentant uniquement une lettre sentinelle inerte et comparer décodage JavaScript de référence, sortie t:jsDecode et décision de règle ; aucune syntaxe active"
+payload_hash_ou_reference: GHSA-pc5q-qfxp-ggqv
+transformation: "t:jsDecode inclut par erreur l'antislash dans le tampon numérique octal ; ParseInt échoue et produit un octet NUL plutôt que le caractère attendu"
+statut: nouveau
+source: https://github.com/corazawaf/coraza/security/advisories/GHSA-pc5q-qfxp-ggqv
+```
+
+**Cause racine.** t:jsDecode inclut par erreur l'antislash dans le tampon numérique octal ; ParseInt échoue et produit un octet NUL plutôt que le caractère attendu.
+
+**Impact défensif.** Contrôler la parité de décodage des échappements octaux, les erreurs de conversion et l'absence de NUL inattendu. Correctif 3.8.0.
+
+**Sources.** https://github.com/corazawaf/coraza/security/advisories/GHSA-pc5q-qfxp-ggqv
+
+
 ### 2026-10-04 — JavaScript à identifiants cunéiformes — obfuscation Unicode et coercions implicites contre inspection lexicale WAF
 
 ```yaml
@@ -150,6 +198,8 @@ source: https://www.wordfence.com/blog/2026/09/5-million-wordpress-sites-affecte
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-09** — Ajout des cas Coraza CVE-2026-104774 (décodage octal `jsDecode`) et Envoy GHSA-2w8w-rfw7-8gg4 (paramètres sur segments relatifs et normalisation des chemins), sous forme de régressions inertes.
 
 - **2026-10-09** — Quarkus CVE-2026-87743 : divergence de canonicalisation entre règle d'autorisation et routage HTTP, conservée comme cas de régression edge non destructif.
 - **2026-10-04** — Ajout du cas public X `2105654858015457541` : obfuscation JavaScript par identifiants cunéiformes Unicode et reconstruction de chaînes via coercions/indexation. La terminaison exécutable a été neutralisée ; le corpus conserve la structure lexicale et les transformations pour régression WAF.
