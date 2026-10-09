@@ -28,6 +28,36 @@ source: URL
 
 ## 2026-10 — divulgations et indexations vérifiées
 
+### 2026-09-18 — Payload CMS < 3.90.0 — contrôle SVG contourné selon l'identité et le chemin de téléversement (indexé 2026-10-07)
+
+- **Date de publication :** 2026-09-18 (advisory primaire ; indexation secondaire 2026-10-07).
+- **Date de veille :** 2026-10-09.
+- **Famille :** svg, sanitizer, stored-xss, content-type, upload-path-differential.
+- **Contexte :** un SVG malveillant téléversé pouvait échapper à la validation, rester stocké et être interprété lorsque le destinataire ouvrait le fichier téléchargé. Le correctif recadre l'identification des fichiers SVG/XML à partir du nom, du type MIME et de l'inspection du contenu ; il impose la validation sur les chemins de téléversement concernés, y compris la distinction entre téléversement direct client et contrôle serveur, puis durcit les en-têtes de livraison.
+- **Produit :** Payload CMS < 3.90.0 ; branche 4.0.0-canary < 4.0.0-canary.34. Corrigé dans 3.90.0 et 4.0.0-canary.34.
+- **Navigateurs :** non précisés ; ouverture du SVG dans un navigateur capable de rendre SVG comme document autonome, interaction requise.
+- **Identifiants :** CVE-2026-105862 ; GHSA-2pwp-2369-8fg3.
+- **Plateforme / source d'origine :** advisory de sécurité Payload CMS / GitHub, avec correctif et tests fournisseur.
+- **Description non destructive :** utiliser un SVG statique sans script ni gestionnaire d'événement, portant uniquement un identifiant sentinelle ; comparer plusieurs chemins de téléversement et combinaisons contrôlées extension/MIME/contenu XML. Vérifier les décisions d'acceptation, la classification SVG réelle, les contrôles serveur obligatoires et les en-têtes `Content-Type`, `Content-Disposition` et CSP lors du téléchargement, sans navigation vers une ressource active.
+- **Intérêt corpus :** `upload route -> client metadata/extension -> SVG/XML content identification -> sanitizer/validation -> storage adapter -> delivery headers -> browser document context`. Couvrir les chemins de téléversement multiples, plutôt que seulement le parseur SVG. **Distinct de CVE-2026-105868 déjà répertoriée**, centrée sur la livraison de documents XML/XSL : ici le sujet est la validation des SVG lors de l'entrée et sur les différents chemins de stockage.
+- **Statut :** à intégrer.
+- **Sources :** https://github.com/payloadcms/payload/security/advisories/GHSA-2pwp-2369-8fg3 ; correctif : https://github.com/payloadcms/payload/commit/a8c3a8e8e2680c96ec4f66f5b3854c5df6c35adf
+
+### 2026-09-24 — Ghost < 6.65.0 — SVG non assaini dans les miniatures et sous une extension trompeuse (indexé 2026-10-07)
+
+- **Date de publication :** 2026-09-24 (advisory primaire ; indexation secondaire 2026-10-07).
+- **Date de veille :** 2026-10-09.
+- **Famille :** svg, sanitizer, stored-xss, upload-content-type, extension-mismatch.
+- **Contexte :** les miniatures média SVG et les images SVG téléversées avec une extension autre que SVG pouvaient être stockées sans sanitisation. Des comptes staff, y compris au niveau Contributor, pouvaient ainsi héberger du contenu actif dans l'origine du site, qui risquait d'être ouvert par d'autres membres de l'équipe.
+- **Produit :** Ghost >= 4.22.0 et < 6.65.0 ; corrigé en 6.65.0.
+- **Navigateurs :** non précisés ; rendu d'un SVG comme document dans l'origine du site.
+- **Identifiants :** CVE-2026-105649 ; GHSA-8575-cr6v-7jh4.
+- **Plateforme / source d'origine :** advisory fournisseur TryGhost / GitHub, release 6.65.0.
+- **Description non destructive :** téléverser en environnement isolé un SVG ne contenant que des formes et un marqueur inerte, sous extension conforme puis extension volontairement discordante, et via le flux de miniature média ; contrôler le passage obligatoire par la validation SVG et la nature des réponses servies. Comparer contenu réel, extension, MIME déclaré et MIME servi, sans script ni événement.
+- **Intérêt corpus :** `media upload/thumbnail -> filename extension vs SVG content -> conditional sanitizer -> stored asset -> same-origin delivery`. Tester tous les chemins d'import et de génération de miniatures ainsi que les discordances entre identité du fichier et extension. **Distinct de CVE-2026-105651 déjà répertoriée**, qui concerne une ressource externe non-image récupérée comme icône de bookmark.
+- **Statut :** à intégrer.
+- **Sources :** https://github.com/TryGhost/Ghost/security/advisories/GHSA-8575-cr6v-7jh4 ; version corrigée : https://github.com/TryGhost/Ghost/releases/tag/v6.65.0
+
 ### 2026-10-02 — Basecamp/Fizzy — pagination Turbo vers un blob Active Storage HTML de même origine (HackerOne #3943339)
 
 - **Date de publication :** 2026-10-02 (divulgation publique ; rapport initial 2026-08-16, correction confirmée par Basecamp le 2026-08-28).
@@ -459,6 +489,8 @@ source: URL
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-09** — Ajout de 2 cas supplémentaires vérifiés et dédupliqués : Payload CMS CVE-2026-105862 (validation SVG sur tous les chemins de téléversement, distincte de XML/XSL CVE-2026-105868) et Ghost CVE-2026-105649 (miniatures SVG et discordance extension/contenu, distincte du bookmark CVE-2026-105651). Tests de régression inertes, sources et correctifs primaires ; dates de publication et d'indexation distinguées.
 
 - **2026-10-09** — Ajout de 6 cas dédupliqués et non destructifs : Basecamp/Fizzy HackerOne #3943339 (pagination Turbo + blob Active Storage/MIME), Vue SSR GHSA-g2v6-rqmx-r4w6 (CR dans nom d'attribut), ProseMirror CVE-2026-104847 (contexte clipboard non validé), CommonMark GHSA-97jj-33gv-5xf9 (frontière fin de chaîne du filtre raw HTML), Payload CVE-2026-105868 (XML/XSL same-origin) et Ghost CVE-2026-105651 (bookmark remote-fetch non-image). Les dates primaires et d'indexation sont distinguées.
 
