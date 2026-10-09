@@ -26,6 +26,100 @@ source: URL
 
 ---
 
+## 2026-10 — divulgations et indexations vérifiées
+
+### 2026-10-02 — Basecamp/Fizzy — pagination Turbo vers un blob Active Storage HTML de même origine (HackerOne #3943339)
+
+- **Date de publication :** 2026-10-02 (divulgation publique ; rapport initial 2026-08-16, correction confirmée par Basecamp le 2026-08-28).
+- **Date de veille :** 2026-10-09.
+- **Famille :** dom-xss, parser-differential, content-type, same-origin-upload, turbo-frame, url-generation.
+- **Contexte :** dans Fizzy, des paramètres HTTP non filtrés pouvaient atteindre Rails url_for pour fabriquer une URL de pagination. Un paramètre réservé à la génération d'URL pouvait modifier la destination d'une pagination chargée automatiquement dans une Turbo Frame. Le chemin secondaire aboutissait à un blob Active Storage non attaché, autorisé par une règle trop permissive ; sur le backend S3, un Content-Type HTML paramétré échappait à une comparaison exacte de types dangereux. Turbo interprétait alors la réponse comme HTML et activait les scripts du frame en héritant du nonce CSP de la page. Le fournisseur a confirmé la chaîne et sa correction.
+- **Produit :** Fizzy (Basecamp/37signals), démontré sur le commit b12e4c52d8eafee19b0167dc5831138f1cfb7103 ; corrigé en production le 2026-08-28 ; Turbo Rails 2.0.23 dans le rapport. Différence de comportement S3 / Disk signalée.
+- **Navigateurs :** Chrome/Chromium dans la reproduction publique ; le rôle du chargement Turbo et de la CSP dépend du frontend.
+- **Identifiants :** HackerOne #3943339 ; pas de CVE indiqué.
+- **Plateforme / source d'origine :** divulgation HackerOne par pirikara, confirmation et résolution par Basecamp.
+- **Description non destructive :** dans une maquette locale à deux comptes fictifs, générer des liens de pagination avec un paramètre réservé remplacé par un chemin de ressource sentinelle ; contrôler la destination effective du Turbo Frame sans insérer de script. Servir un document HTML strictement inerte depuis un stockage de test avec MIME canonique et MIME paramétré, comparer le traitement du Content-Disposition, du Content-Type et de l'autorisation d'un blob non attaché. Ne créer ni jeton, ni appel intercompte, ni requête externe.
+- **Intérêt corpus :** chaîne multi-frontières request params -> Rails URL generation -> automatic Turbo pagination -> Active Storage proxy authorization -> MIME exact-match -> HTML frame parser -> CSP nonce handling. Ajouter des assertions indépendantes sur allowlist des paramètres URL, propriété des blobs, canonicalisation MIME et traitement du HTML de même origine ; ne pas reproduire la phase de compromission.
+- **Statut :** à intégrer.
+- **Sources :** https://hackerone.com/reports/3943339
+
+### 2026-08-31 — Vue SSR — U+000D absent de la validation des noms d'attributs dynamiques (indexé 2026-10-05)
+
+- **Date de publication :** 2026-08-31 (advisory primaire ; indexation GitHub Advisory Database 2026-10-05).
+- **Date de veille :** 2026-10-09.
+- **Famille :** parser-differential, stored-xss, ssr, attribute-name, control-character.
+- **Contexte :** dans @vue/server-renderer, ssrRenderAttrs échappe correctement les valeurs, mais valide les noms de clés dynamiques via une liste de caractères interdits qui omettait U+000D CARRIAGE RETURN. Le parseur HTML normalise CR en LF avant tokenisation, pouvant transformer un nom d'attribut supposé unique en plusieurs attributs distincts dans le HTML SSR. La voie client via setAttribute n'a pas la même faiblesse.
+- **Produit :** @vue/server-renderer < 3.5.42 et 3.6.0-rc.0 à 3.6.0-rc.5 ; corrigé en 3.5.42 et 3.6.0-rc.6.
+- **Navigateurs :** parseurs HTML conformes WHATWG (normalisation CR/LF) ; cas spécifique au SSR, non au DOM client.
+- **Identifiants :** GHSA-g2v6-rqmx-r4w6 ; pas de CVE attribué.
+- **Plateforme / source d'origine :** GitHub Security Advisory vuejs/core, signalement onevilx ; recoupement avec correctif et versions publiées.
+- **Description non destructive :** injecter uniquement un nom de clé sentinelle de la forme 'champA' + U+000D + 'champB' avec une valeur textuelle neutre, comparer le résultat ssrRenderAttrs, les octets HTML sérialisés et la liste d'attributs du DOM reparsé ; aucun gestionnaire d'événement ni script.
+- **Intérêt corpus :** pipeline untrusted object key -> SSR attribute-name validation -> HTML serialization -> CR preprocessing -> attribute tokenization. Contrôler les cinq espaces ASCII définis par HTML et distinguer la validation des clés de celle des valeurs ; comparer SSR et setAttribute.
+- **Statut :** à intégrer.
+- **Sources :** https://github.com/vuejs/core/security/advisories/GHSA-g2v6-rqmx-r4w6 ; https://github.com/vuejs/core/commit/a2b40db ; https://github.com/vuejs/core/releases/tag/v3.5.42
+
+### 2026-08-25 — ProseMirror < 1.42.3 — attributs du contexte de tranche clipboard sans validation (indexé 2026-10-05)
+
+- **Date de publication :** 2026-08-25 (advisory primaire ; indexation GitHub Advisory Database 2026-10-05).
+- **Date de veille :** 2026-10-09.
+- **Famille :** dom-xss, rich-text-editor, clipboard, schema-validation, context-reconstruction.
+- **Contexte :** lors du collage de HTML provenant d'une source non fiable, le mécanisme de reconstruction du contexte d'une tranche ProseMirror créait des nœuds à partir d'attributs fournis par le clipboard sans appliquer les validateurs du schéma. Le correctif ajoute type.checkAttrs aux attributs du contexte avant de recréer les nœuds.
+- **Produit :** prosemirror-view < 1.42.3 ; corrigé en 1.42.3.
+- **Navigateurs :** navigateurs web utilisant le composant ProseMirror ; aucun moteur particulier spécifié.
+- **Identifiants :** CVE-2026-104847 / GHSA-c8x8-7fp4-3x9w.
+- **Plateforme / source d'origine :** advisory ProseMirror, signalement Pedro Paniago (dropn0w), correctif mainteneur.
+- **Description non destructive :** coller dans un éditeur de laboratoire un fragment HTML inerte contenant des attributs sentinelles acceptés et refusés par un schéma de test ; vérifier la reconstruction du Slice, les appels de validation d'attributs et le DOM résultant. Ne pas utiliser de script, de gestionnaire d'événement ni de ressource distante.
+- **Intérêt corpus :** pipeline external clipboard HTML -> ProseMirror slice context -> node recreation -> schema attribute validation -> editor DOM. Ajouter des variantes pour contextes imbriqués, attributs requis et validateurs qui rejettent, afin de vérifier que toutes les voies de création de nœuds passent par la même politique.
+- **Statut :** à intégrer.
+- **Sources :** https://github.com/ProseMirror/prosemirror-view/security/advisories/GHSA-c8x8-7fp4-3x9w ; https://github.com/ProseMirror/prosemirror-view/commit/2e91a612bbc1248e55b4f6061fc93fe459f977c1 ; https://github.com/advisories/GHSA-c8x8-7fp4-3x9w
+
+### 2026-09-21 — league/commonmark <= 2.10.1 — fin de chaîne ignorée par le filtre DisallowedRawHtml (indexé 2026-09-30)
+
+- **Date de publication :** 2026-09-21 (advisory primaire ; indexation GitHub Advisory Database 2026-09-30).
+- **Date de veille :** 2026-10-09.
+- **Famille :** parser-differential, stored-xss, markdown-to-html, regex-boundary, sanitizer.
+- **Contexte :** l'extension DisallowedRawHtml cherchait un nom de balise interdit suivi obligatoirement d'un séparateur explicite. Le parseur de blocs Markdown acceptait au contraire un nom de balise interrompu par la fin de la chaîne/l'une des frontières de bloc ; le filtre n'échappait alors pas ce fragment, qui pouvait retrouver une structure HTML différente une fois les blocs assemblés et reparsés par le navigateur. Conditions : html_input=allow et extension DisallowedRawHtml active (GFM).
+- **Produit :** league/commonmark >= 1.3.0 et <= 2.10.1 ; corrigé en 2.10.2.
+- **Navigateurs :** parseurs HTML standards ; divergence entre regex du renderer Markdown et reconstruction HTML.
+- **Identifiants :** GHSA-97jj-33gv-5xf9 ; pas de CVE connu.
+- **Plateforme / source d'origine :** advisory thephpleague/commonmark, signalement 4n86rakam1, correctif amont.
+- **Description non destructive :** construire une entrée Markdown de test dont le dernier fragment de bloc contient seulement le début d'un nom de balise interdit, sans script ni attribut actif ; comparer le classement du bloc, le résultat du filtre DisallowedRawHtml, la concaténation des blocs et le DOM final. Ajouter un contrôle où le nom est suivi d'un séparateur explicite.
+- **Intérêt corpus :** pipeline Markdown partial HTML block -> regex requiring trailing character -> end-of-string omission -> block assembly -> browser HTML parse. Tester systématiquement les fins de chaîne et de bloc dans les règles regex d'interdiction, en plus des séparateurs explicites. Distinct de GHSA-f8fg-pg57-v4j8 (U+000C).
+- **Statut :** à intégrer.
+- **Sources :** https://github.com/thephpleague/commonmark/security/advisories/GHSA-97jj-33gv-5xf9 ; https://github.com/thephpleague/commonmark/commit/411afcc ; https://github.com/thephpleague/commonmark/releases/tag/2.10.2
+
+### 2026-09-18 — Payload CMS < 3.90.0 — XML et feuille de style servis dans l'origine applicative (indexé 2026-10-07)
+
+- **Date de publication :** 2026-09-18 (advisory primaire ; indexation GitHub Advisory Database 2026-10-07).
+- **Date de veille :** 2026-10-09.
+- **Famille :** stored-xss, xml, xslt, content-type, upload-to-browser, same-origin.
+- **Contexte :** dans certaines configurations de stockage local, un XML téléversé avec une feuille de style associée pouvait être ouvert par un utilisateur connecté et conduire à du JavaScript exécuté dans l'origine de Payload. Les téléversements XML étaient acceptés par défaut. La frontière de confiance est le service de fichiers XML/XSL comme documents interprétables dans l'origine applicative.
+- **Produit :** payload < 3.90.0 ; branches canary >= 4.0.0-canary.0 et < 4.0.0-canary.34 ; corrigé en 3.90.0 / 4.0.0-canary.34.
+- **Navigateurs :** navigateurs prenant en charge le traitement XML et les feuilles de style dans les conditions concernées ; moteurs précis non indiqués dans l'advisory.
+- **Identifiants :** CVE-2026-105868 / GHSA-9qpg-3cf8-w33x.
+- **Plateforme / source d'origine :** GitHub Security Advisory payloadcms/payload, signalement Zerotistic ; release corrective.
+- **Description non destructive :** téléverser dans une instance isolée un document XML avec une feuille XSL ne produisant que du texte sentinelle. Comparer l'acceptation du fichier, le type MIME, les en-têtes de réponse, l'origine et la représentation finale à l'ouverture ; refuser tout document XML/XSL qui serait interprété comme contenu actif de l'application. Aucun script ni appel réseau.
+- **Intérêt corpus :** pipeline XML upload -> local storage -> same-origin serving -> stylesheet processing -> document rendering. Tester l'isolation d'origine et les politiques de livraison sur XML/XSL séparément des SVG, en particulier la différence entre affichage inline et téléchargement.
+- **Statut :** à intégrer.
+- **Sources :** https://github.com/payloadcms/payload/security/advisories/GHSA-9qpg-3cf8-w33x ; https://github.com/payloadcms/payload/releases/tag/v3.90.0 ; https://github.com/advisories/GHSA-9qpg-3cf8-w33x
+
+### 2026-09-17 — Ghost < 6.64.0 — ressource externe non-image enregistrée comme icône de bookmark (indexé 2026-10-07)
+
+- **Date de publication :** 2026-09-17 (advisory primaire ; indexation GitHub Advisory Database 2026-10-07).
+- **Date de veille :** 2026-10-09.
+- **Famille :** stored-xss, content-type, remote-fetch, image-metadata, same-origin-upload.
+- **Contexte :** la création d'une bookmark card pouvait récupérer une ressource externe et l'enregistrer comme icône ou miniature sans garantir qu'il s'agissait d'une image. Un utilisateur staff, y compris Contributor, pouvait ainsi héberger un document HTML arbitraire dans l'origine du site Ghost. Le problème diffère d'un upload classique : la source est un fetch distant transitant par une fonctionnalité de métadonnées d'aperçu.
+- **Produit :** Ghost >= 5.94.0 et < 6.64.0 ; corrigé en 6.64.0.
+- **Navigateurs :** navigateurs standards lors de l'ouverture d'une ressource active de même origine ; pas de divergence moteur annoncée.
+- **Identifiants :** CVE-2026-105651 / GHSA-347q-26qq-h2p6.
+- **Plateforme / source d'origine :** advisory TryGhost/Ghost, signalement VinSOC Labs et chercheurs crédités, correctif amont.
+- **Description non destructive :** servir depuis un hôte de laboratoire un document HTML strictement inerte annoncé comme image d'une page de test ; faire créer une bookmark card sur une instance autorisée et comparer type distant déclaré, type détecté, fichier stocké et Content-Type effectivement servi. Vérifier que le document non-image est rejeté ou isolé, sans script ni URL externe à l'environnement de test.
+- **Intérêt corpus :** pipeline remote page metadata -> image URL fetch -> media storage -> same-origin file delivery -> browser document interpretation. Couvrir les importeurs d'images indirects (bookmarks, thumbnails, favicons) en plus des uploads directs, avec contrôle du type après récupération et au service.
+- **Statut :** à intégrer.
+- **Sources :** https://github.com/TryGhost/Ghost/security/advisories/GHSA-347q-26qq-h2p6 ; https://github.com/TryGhost/Ghost/commit/b41fe3f ; https://github.com/TryGhost/Ghost/releases/tag/v6.64.0
+
+---
+
 ## 2026-09
 
 ### 2026-09-25 — code16/Sharp < 9.22.5 — `data-html-content` franchissant la frontière du sanitizer
@@ -365,6 +459,8 @@ source: URL
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-09** — Ajout de 6 cas dédupliqués et non destructifs : Basecamp/Fizzy HackerOne #3943339 (pagination Turbo + blob Active Storage/MIME), Vue SSR GHSA-g2v6-rqmx-r4w6 (CR dans nom d'attribut), ProseMirror CVE-2026-104847 (contexte clipboard non validé), CommonMark GHSA-97jj-33gv-5xf9 (frontière fin de chaîne du filtre raw HTML), Payload CVE-2026-105868 (XML/XSL same-origin) et Ghost CVE-2026-105651 (bookmark remote-fetch non-image). Les dates primaires et d'indexation sont distinguées.
 
 - **2026-09-29** — Ajout de CVE-2026-61784 / GHSA-j8r4-32c5-33rc (xhtml-purifier : rupture de frontière d'attribut lors de la sérialisation après sanitisation) et CVE-2026-61825 / GHSA-vj3q-vp3g-j9c8 (Sharp : `data-html-content` comme transport privilégié de HTML à travers le sanitizer).
 
