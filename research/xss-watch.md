@@ -26,6 +26,119 @@ source: URL
 
 ---
 
+
+## 2026-10-10 — rattrapage des advisories DOMSanitizer et Indico
+
+### 2026-09-28 — DOMSanitizer <=1.0.15 — CVE-2026-100370
+
+```yaml
+date_publication: 2026-09-28
+date_veille: 2026-10-10
+famille: sanitizer
+contexte: "validation incomplète des URL data: encodées dans isDangerousUrl"
+produit: "DOMSanitizer <=1.0.15"
+navigateurs: []
+identifiants: [CVE-2026-100370]
+statut: nouveau
+source: https://github.com/rhukster/dom-sanitizer/security/advisories
+```
+
+**Origine.** Advisory et correctif fournisseur.
+
+**Description non destructive.** validation incomplète des URL data: encodées dans isDangerousUrl. Tester avec des domaines et marqueurs textuels sentinelles, sans code actif ni exfiltration.
+
+**Intérêt pour le corpus.** Vérifier la cohérence du contrôle des URL et de l'échappement à la frontière entre entrée, sanitisation et rendu. Correctif : DOMSanitizer 1.0.16 ou Indico 3.3.13 selon le cas.
+
+**Sources.** https://github.com/rhukster/dom-sanitizer/security/advisories
+
+### 2026-10-01 — DOMSanitizer <=1.0.15 — CVE-2026-103686
+
+```yaml
+date_publication: 2026-10-01
+date_veille: 2026-10-10
+famille: sanitizer
+contexte: "validation insuffisante des URL dans certains attributs HTML"
+produit: "DOMSanitizer <=1.0.15"
+navigateurs: []
+identifiants: [CVE-2026-103686]
+statut: nouveau
+source: https://github.com/rhukster/dom-sanitizer/security/advisories/GHSA-mrpv-6x26-mf6c
+```
+
+**Origine.** Advisory et correctif fournisseur.
+
+**Description non destructive.** validation insuffisante des URL dans certains attributs HTML. Tester avec des domaines et marqueurs textuels sentinelles, sans code actif ni exfiltration.
+
+**Intérêt pour le corpus.** Vérifier la cohérence du contrôle des URL et de l'échappement à la frontière entre entrée, sanitisation et rendu. Correctif : DOMSanitizer 1.0.16 ou Indico 3.3.13 selon le cas.
+
+**Sources.** https://github.com/rhukster/dom-sanitizer/security/advisories/GHSA-mrpv-6x26-mf6c
+
+### 2026-10-01 — DOMSanitizer <=1.0.15 — CVE-2026-103687
+
+```yaml
+date_publication: 2026-10-01
+date_veille: 2026-10-10
+famille: svg
+contexte: "validation incomplète des URL dans le contexte SVG"
+produit: "DOMSanitizer <=1.0.15"
+navigateurs: []
+identifiants: [CVE-2026-103687]
+statut: nouveau
+source: https://github.com/rhukster/dom-sanitizer/security/advisories/GHSA-cjfg-j8jp-5xvc
+```
+
+**Origine.** Advisory et correctif fournisseur.
+
+**Description non destructive.** validation incomplète des URL dans le contexte SVG. Tester avec des domaines et marqueurs textuels sentinelles, sans code actif ni exfiltration.
+
+**Intérêt pour le corpus.** Vérifier la cohérence du contrôle des URL et de l'échappement à la frontière entre entrée, sanitisation et rendu. Correctif : DOMSanitizer 1.0.16 ou Indico 3.3.13 selon le cas.
+
+**Sources.** https://github.com/rhukster/dom-sanitizer/security/advisories/GHSA-cjfg-j8jp-5xvc
+
+### 2026-08-25 — Indico <3.3.13 — CVE-2026-107396
+
+```yaml
+date_publication: 2026-08-25
+date_veille: 2026-10-10
+famille: stored-xss
+contexte: "contrôle incomplet des URL dans les champs de liens personnalisés"
+produit: "Indico <3.3.13"
+navigateurs: []
+identifiants: [CVE-2026-107396]
+statut: nouveau
+source: https://github.com/indico/indico/security/advisories/GHSA-c4wc-ggrj-jg9v
+```
+
+**Origine.** Advisory et correctif fournisseur.
+
+**Description non destructive.** contrôle incomplet des URL dans les champs de liens personnalisés. Tester avec des domaines et marqueurs textuels sentinelles, sans code actif ni exfiltration.
+
+**Intérêt pour le corpus.** Vérifier la cohérence du contrôle des URL et de l'échappement à la frontière entre entrée, sanitisation et rendu. Correctif : DOMSanitizer 1.0.16 ou Indico 3.3.13 selon le cas.
+
+**Sources.** https://github.com/indico/indico/security/advisories/GHSA-c4wc-ggrj-jg9v
+
+### 2026-08-25 — Indico <3.3.13 — CVE-2026-107397
+
+```yaml
+date_publication: 2026-08-25
+date_veille: 2026-10-10
+famille: dom-xss
+contexte: "neutralisation incomplète dans l'interface de conflit de modifications concurrentes de comptes rendus"
+produit: "Indico <3.3.13"
+navigateurs: []
+identifiants: [CVE-2026-107397]
+statut: nouveau
+source: https://github.com/indico/indico/security/advisories/GHSA-cw24-x4mj-fw3q
+```
+
+**Origine.** Advisory et correctif fournisseur.
+
+**Description non destructive.** neutralisation incomplète dans l'interface de conflit de modifications concurrentes de comptes rendus. Tester avec des domaines et marqueurs textuels sentinelles, sans code actif ni exfiltration.
+
+**Intérêt pour le corpus.** Vérifier la cohérence du contrôle des URL et de l'échappement à la frontière entre entrée, sanitisation et rendu. Correctif : DOMSanitizer 1.0.16 ou Indico 3.3.13 selon le cas.
+
+**Sources.** https://github.com/indico/indico/security/advisories/GHSA-cw24-x4mj-fw3q
+
 ## 2026-10 — divulgations et indexations vérifiées
 
 ### 2026-10-08 — JHipster — ContentType de Blob persisté puis réutilisé dans un document `blob:` de même origine
@@ -537,6 +650,8 @@ source: URL
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-10** — Rattrapage de trois cas DOMSanitizer et deux cas Indico ; entrées non destructives et dédupliquées.
 
 - **2026-10-09** — Ajout de GHSA-6688-9rhm-gjv2 : retour d'une racine raw-text exclue en mode IN_PLACE, avec régression de parsing non destructif.
 
