@@ -44,6 +44,150 @@ source: URL
 
 ## Entrées
 
+### 2026-09-27 — CVE-2026-61812 — t:htmlEntityDecode ne reconnaissait que cinq entités nommées,
+
+```yaml
+date_publication: 2026-09-27
+date_veille: 2026-10-10
+famille: encoding
+produit_waf: "ModSecurity 2 <=2.9.14 / 3 <=3.0.16"
+contexte: "t:htmlEntityDecode ne reconnaissait que cinq entités nommées, avec une collision de préfixe supplémentaire en v3"
+identifiants: [CVE-2026-61812, GHSA-cxqf-vgrr-xxrv]
+plateforme_source: ModSecurity / GitHub Security Advisory
+payload_neutralise: "comparer les entités ASCII HTML nommées appliquées à une sentinelle inerte et leur décodage WHATWG"
+payload_hash_ou_reference: GHSA-cxqf-vgrr-xxrv
+transformation: "t:htmlEntityDecode ne reconnaissait que cinq entités nommées, avec une collision de préfixe supplémentaire en v3"
+statut: nouveau
+source: https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-cxqf-vgrr-xxrv
+```
+
+**Cause racine.** t:htmlEntityDecode ne reconnaissait que cinq entités nommées, avec une collision de préfixe supplémentaire en v3.
+
+**Impact défensif.** comparer les entités ASCII HTML nommées appliquées à une sentinelle inerte et leur décodage WHATWG. Vérifier la parité entre représentation inspectée et consommée ; mettre à jour vers libmodsecurity3 3.0.17 ou mod_security2 2.9.15 selon les versions affectées.
+
+**Sources.** https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-cxqf-vgrr-xxrv ; https://modsecurity.org/20260928/security-update-digest-overview-of-recent-advisory-fixes-2026-september/
+
+
+### 2026-09-27 — CVE-2026-104269 — multipart filename* RFC 2231 ignoré ou non
+
+```yaml
+date_publication: 2026-09-27
+date_veille: 2026-10-10
+famille: parser-differential
+produit_waf: "ModSecurity 2 <=2.9.14 / 3 <=3.0.16"
+contexte: "multipart filename* RFC 2231 ignoré ou non prioritaire face à filename alors que le backend peut le privilégier"
+identifiants: [CVE-2026-104269, GHSA-5pww-8rfg-9crf]
+plateforme_source: ModSecurity / GitHub Security Advisory
+payload_neutralise: "utiliser deux noms de fichiers sentinelles distincts et comparer la valeur exposée aux règles et au backend"
+payload_hash_ou_reference: GHSA-5pww-8rfg-9crf
+transformation: "multipart filename* RFC 2231 ignoré ou non prioritaire face à filename alors que le backend peut le privilégier"
+statut: nouveau
+source: https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-5pww-8rfg-9crf
+```
+
+**Cause racine.** multipart filename* RFC 2231 ignoré ou non prioritaire face à filename alors que le backend peut le privilégier.
+
+**Impact défensif.** utiliser deux noms de fichiers sentinelles distincts et comparer la valeur exposée aux règles et au backend. Vérifier la parité entre représentation inspectée et consommée ; mettre à jour vers libmodsecurity3 3.0.17 ou mod_security2 2.9.15 selon les versions affectées.
+
+**Sources.** https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-5pww-8rfg-9crf ; https://modsecurity.org/20260928/security-update-digest-overview-of-recent-advisory-fixes-2026-september/
+
+
+### 2026-09-27 — CVE-2026-104259 — t:removeComments sautait le caractère suivant une fermeture
+
+```yaml
+date_publication: 2026-09-27
+date_veille: 2026-10-10
+famille: normalization
+produit_waf: "ModSecurity 2 <=2.9.14 / 3 <=3.0.16"
+contexte: "t:removeComments sautait le caractère suivant une fermeture de commentaire, causant conservation de commentaires adjacents, NUL final ou troncature"
+identifiants: [CVE-2026-104259, GHSA-qrch-pjfr-9g47]
+plateforme_source: ModSecurity / GitHub Security Advisory
+payload_neutralise: "tester des mots sentinelles séparés par commentaires adjacents et vérifier sortie complète sans NUL"
+payload_hash_ou_reference: GHSA-qrch-pjfr-9g47
+transformation: "t:removeComments sautait le caractère suivant une fermeture de commentaire, causant conservation de commentaires adjacents, NUL final ou troncature"
+statut: nouveau
+source: https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-qrch-pjfr-9g47
+```
+
+**Cause racine.** t:removeComments sautait le caractère suivant une fermeture de commentaire, causant conservation de commentaires adjacents, NUL final ou troncature.
+
+**Impact défensif.** tester des mots sentinelles séparés par commentaires adjacents et vérifier sortie complète sans NUL. Vérifier la parité entre représentation inspectée et consommée ; mettre à jour vers libmodsecurity3 3.0.17 ou mod_security2 2.9.15 selon les versions affectées.
+
+**Sources.** https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-qrch-pjfr-9g47 ; https://modsecurity.org/20260928/security-update-digest-overview-of-recent-advisory-fixes-2026-september/
+
+
+### 2026-09-27 — CVE-2026-73856 — SecResponseBodyMimeType comparait Content-Type de réponse avec sensibilité
+
+```yaml
+date_publication: 2026-09-27
+date_veille: 2026-10-10
+famille: content-type
+produit_waf: "libmodsecurity3 <=3.0.16"
+contexte: "SecResponseBodyMimeType comparait Content-Type de réponse avec sensibilité à la casse et omettait certaines inspections"
+identifiants: [CVE-2026-73856, GHSA-vmg8-j66p-vgvw]
+plateforme_source: ModSecurity / GitHub Security Advisory
+payload_neutralise: "réponse de laboratoire textuelle inerte avec variations de casse de Content-Type et comparaison de l'activation RESPONSE_BODY"
+payload_hash_ou_reference: GHSA-vmg8-j66p-vgvw
+transformation: "SecResponseBodyMimeType comparait Content-Type de réponse avec sensibilité à la casse et omettait certaines inspections"
+statut: nouveau
+source: https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-vmg8-j66p-vgvw
+```
+
+**Cause racine.** SecResponseBodyMimeType comparait Content-Type de réponse avec sensibilité à la casse et omettait certaines inspections.
+
+**Impact défensif.** réponse de laboratoire textuelle inerte avec variations de casse de Content-Type et comparaison de l'activation RESPONSE_BODY. Vérifier la parité entre représentation inspectée et consommée ; mettre à jour vers libmodsecurity3 3.0.17 ou mod_security2 2.9.15 selon les versions affectées.
+
+**Sources.** https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-vmg8-j66p-vgvw ; https://modsecurity.org/20260928/security-update-digest-overview-of-recent-advisory-fixes-2026-september/
+
+
+### 2026-09-27 — CVE-2026-103932 — @rxGlobal sous PCRE2 traitait le dépassement de
+
+```yaml
+date_publication: 2026-09-27
+date_veille: 2026-10-10
+famille: autre
+produit_waf: "libmodsecurity3 3.0.5–3.0.16"
+contexte: "@rxGlobal sous PCRE2 traitait le dépassement de limite comme une absence de correspondance et ne validait pas certains motifs dynamiques"
+identifiants: [CVE-2026-103932, GHSA-5m93-4h75-3p2w]
+plateforme_source: ModSecurity / GitHub Security Advisory
+payload_neutralise: "mesurer sur un motif synthétique borné les états erreur/limite/no-match et la télémétrie de contrôle"
+payload_hash_ou_reference: GHSA-5m93-4h75-3p2w
+transformation: "@rxGlobal sous PCRE2 traitait le dépassement de limite comme une absence de correspondance et ne validait pas certains motifs dynamiques"
+statut: nouveau
+source: https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-5m93-4h75-3p2w
+```
+
+**Cause racine.** @rxGlobal sous PCRE2 traitait le dépassement de limite comme une absence de correspondance et ne validait pas certains motifs dynamiques.
+
+**Impact défensif.** mesurer sur un motif synthétique borné les états erreur/limite/no-match et la télémétrie de contrôle. Vérifier la parité entre représentation inspectée et consommée ; mettre à jour vers libmodsecurity3 3.0.17 ou mod_security2 2.9.15 selon les versions affectées.
+
+**Sources.** https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-5m93-4h75-3p2w ; https://modsecurity.org/20260928/security-update-digest-overview-of-recent-advisory-fixes-2026-september/
+
+
+### 2026-09-27 — GHSA-4j47-8qcr-jf59 — t:base64DecodeExt gérait incorrectement l'alphabet Base64URL et certains
+
+```yaml
+date_publication: 2026-09-27
+date_veille: 2026-10-10
+famille: encoding
+produit_waf: "ModSecurity 2 <=2.9.14 / 3 <=3.0.16"
+contexte: "t:base64DecodeExt gérait incorrectement l'alphabet Base64URL et certains groupes de padding malformés"
+identifiants: [GHSA-4j47-8qcr-jf59]
+plateforme_source: ModSecurity / GitHub Security Advisory
+payload_neutralise: "encoder une sentinelle inerte en Base64URL et comparer sortie du décodeur à RFC 4648, sans contenu actif"
+payload_hash_ou_reference: GHSA-4j47-8qcr-jf59
+transformation: "t:base64DecodeExt gérait incorrectement l'alphabet Base64URL et certains groupes de padding malformés"
+statut: nouveau
+source: https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-4j47-8qcr-jf59
+```
+
+**Cause racine.** t:base64DecodeExt gérait incorrectement l'alphabet Base64URL et certains groupes de padding malformés.
+
+**Impact défensif.** encoder une sentinelle inerte en Base64URL et comparer sortie du décodeur à RFC 4648, sans contenu actif. Vérifier la parité entre représentation inspectée et consommée ; mettre à jour vers libmodsecurity3 3.0.17 ou mod_security2 2.9.15 selon les versions affectées.
+
+**Sources.** https://github.com/owasp-modsecurity/ModSecurity/security/advisories/GHSA-4j47-8qcr-jf59 ; https://modsecurity.org/20260928/security-update-digest-overview-of-recent-advisory-fixes-2026-september/
+
+
 ### 2026-09 — Envoy — segments dot/dotdot avec paramètres de chemin
 
 ```yaml
@@ -198,6 +342,8 @@ source: https://www.wordfence.com/blog/2026/09/5-million-wordpress-sites-affecte
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-10** — Rattrapage de six advisories ModSecurity de septembre 2026 : HTML entities, multipart RFC 2231, commentaires adjacents, Content-Type, PCRE2 @rxGlobal et Base64URL ; cas neutralisés et dédupliqués.
 
 - **2026-10-09** — Ajout des cas Coraza CVE-2026-104774 (décodage octal `jsDecode`) et Envoy GHSA-2w8w-rfw7-8gg4 (paramètres sur segments relatifs et normalisation des chemins), sous forme de régressions inertes.
 
