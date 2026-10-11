@@ -139,6 +139,141 @@ source: https://github.com/indico/indico/security/advisories/GHSA-cw24-x4mj-fw3q
 
 **Sources.** https://github.com/indico/indico/security/advisories/GHSA-cw24-x4mj-fw3q
 
+
+## 2026-10-11 — rattrapage des advisories SiYuan et Ghost
+
+### 2026-10-09 — SiYuan — GHSA-fmj3-xc2f-6w4w
+
+```yaml
+date_publication: 2026-10-09
+date_veille: 2026-10-11
+famille: dom-xss
+contexte: "schéma de redirection après authentification non filtré pouvant déclencher du JavaScript dans l'origine du noyau"
+produit: "SiYuan"
+navigateurs: []
+identifiants: [GHSA-fmj3-xc2f-6w4w]
+statut: nouveau
+source: https://github.com/siyuan-note/siyuan/security/advisories/GHSA-fmj3-xc2f-6w4w
+```
+
+**Plateforme / origine.** Advisory de sécurité du fournisseur sur GitHub.
+
+**Description non destructive.** schéma de redirection après authentification non filtré pouvant déclencher du JavaScript dans l'origine du noyau. Utiliser exclusivement des URL de domaine sentinelle, documents et balises inertes, et comparer la représentation acceptée à celle rendue, sans déclenchement de script.
+
+**Intérêt pour le corpus.** Régression de validation contextuelle (URL, MIME, SVG, HTML embarqué) et de persistance entre la donnée source et son rendu. Vérifier le correctif et les préconditions détaillées dans l'advisory primaire.
+
+**Source.** https://github.com/siyuan-note/siyuan/security/advisories/GHSA-fmj3-xc2f-6w4w
+
+### 2026-10-09 — SiYuan — GHSA-hhvq-jqv9-pgjq
+
+```yaml
+date_publication: 2026-10-09
+date_veille: 2026-10-11
+famille: stored-xss
+contexte: "lien KaTeX non fiable dans les blocs mathématiques du chemin éditeur local"
+produit: "SiYuan"
+navigateurs: []
+identifiants: [GHSA-hhvq-jqv9-pgjq]
+statut: nouveau
+source: https://github.com/siyuan-note/siyuan/security/advisories/GHSA-hhvq-jqv9-pgjq
+```
+
+**Plateforme / origine.** Advisory de sécurité du fournisseur sur GitHub.
+
+**Description non destructive.** lien KaTeX non fiable dans les blocs mathématiques du chemin éditeur local. Utiliser exclusivement des URL de domaine sentinelle, documents et balises inertes, et comparer la représentation acceptée à celle rendue, sans déclenchement de script.
+
+**Intérêt pour le corpus.** Régression de validation contextuelle (URL, MIME, SVG, HTML embarqué) et de persistance entre la donnée source et son rendu. Vérifier le correctif et les préconditions détaillées dans l'advisory primaire.
+
+**Source.** https://github.com/siyuan-note/siyuan/security/advisories/GHSA-hhvq-jqv9-pgjq
+
+### 2026-09-17 — Ghost >=6.22.1 <6.64.0 — GHSA-gfjp-2p8f-94qv
+
+```yaml
+date_publication: 2026-09-17
+date_veille: 2026-10-11
+famille: stored-xss
+contexte: "fichiers stockés localement servis avec un type MIME dérivé de l'extension sans restriction de contenu actif"
+produit: "Ghost >=6.22.1 <6.64.0"
+navigateurs: []
+identifiants: [GHSA-gfjp-2p8f-94qv]
+statut: nouveau
+source: https://github.com/TryGhost/Ghost/security/advisories/GHSA-gfjp-2p8f-94qv
+```
+
+**Plateforme / origine.** Advisory de sécurité du fournisseur sur GitHub.
+
+**Description non destructive.** fichiers stockés localement servis avec un type MIME dérivé de l'extension sans restriction de contenu actif. Utiliser exclusivement des URL de domaine sentinelle, documents et balises inertes, et comparer la représentation acceptée à celle rendue, sans déclenchement de script.
+
+**Intérêt pour le corpus.** Régression de validation contextuelle (URL, MIME, SVG, HTML embarqué) et de persistance entre la donnée source et son rendu. Vérifier le correctif et les préconditions détaillées dans l'advisory primaire.
+
+**Source.** https://github.com/TryGhost/Ghost/security/advisories/GHSA-gfjp-2p8f-94qv
+
+### 2026-10-01 — Ghost — GHSA-hqq2-xqr2-fmx2
+
+```yaml
+date_publication: 2026-10-01
+date_veille: 2026-10-11
+famille: svg
+contexte: "fichiers SVG non assainis dans les imports de contenu"
+produit: "Ghost"
+navigateurs: []
+identifiants: [GHSA-hqq2-xqr2-fmx2]
+statut: nouveau
+source: https://github.com/TryGhost/Ghost/security/advisories/GHSA-hqq2-xqr2-fmx2
+```
+
+**Plateforme / origine.** Advisory de sécurité du fournisseur sur GitHub.
+
+**Description non destructive.** fichiers SVG non assainis dans les imports de contenu. Utiliser exclusivement des URL de domaine sentinelle, documents et balises inertes, et comparer la représentation acceptée à celle rendue, sans déclenchement de script.
+
+**Intérêt pour le corpus.** Régression de validation contextuelle (URL, MIME, SVG, HTML embarqué) et de persistance entre la donnée source et son rendu. Vérifier le correctif et les préconditions détaillées dans l'advisory primaire.
+
+**Source.** https://github.com/TryGhost/Ghost/security/advisories/GHSA-hqq2-xqr2-fmx2
+
+### 2026-10-01 — Ghost — GHSA-69qc-f5m6-889c
+
+```yaml
+date_publication: 2026-10-01
+date_veille: 2026-10-11
+famille: stored-xss
+contexte: "prévisualisations de cartes Embed conservant du contenu HTML non fiable"
+produit: "Ghost"
+navigateurs: []
+identifiants: [GHSA-69qc-f5m6-889c]
+statut: nouveau
+source: https://github.com/TryGhost/Ghost/security/advisories/GHSA-69qc-f5m6-889c
+```
+
+**Plateforme / origine.** Advisory de sécurité du fournisseur sur GitHub.
+
+**Description non destructive.** prévisualisations de cartes Embed conservant du contenu HTML non fiable. Utiliser exclusivement des URL de domaine sentinelle, documents et balises inertes, et comparer la représentation acceptée à celle rendue, sans déclenchement de script.
+
+**Intérêt pour le corpus.** Régression de validation contextuelle (URL, MIME, SVG, HTML embarqué) et de persistance entre la donnée source et son rendu. Vérifier le correctif et les préconditions détaillées dans l'advisory primaire.
+
+**Source.** https://github.com/TryGhost/Ghost/security/advisories/GHSA-69qc-f5m6-889c
+
+### 2026-09-17 — Ghost <6.64.0 — GHSA-v3xr-g6p2-fvgv
+
+```yaml
+date_publication: 2026-09-17
+date_veille: 2026-10-11
+famille: stored-xss
+contexte: "réponses oEmbed photo externes injectées dans le contenu des articles"
+produit: "Ghost <6.64.0"
+navigateurs: []
+identifiants: [GHSA-v3xr-g6p2-fvgv]
+statut: nouveau
+source: https://github.com/TryGhost/Ghost/security/advisories/GHSA-v3xr-g6p2-fvgv
+```
+
+**Plateforme / origine.** Advisory de sécurité du fournisseur sur GitHub.
+
+**Description non destructive.** réponses oEmbed photo externes injectées dans le contenu des articles. Utiliser exclusivement des URL de domaine sentinelle, documents et balises inertes, et comparer la représentation acceptée à celle rendue, sans déclenchement de script.
+
+**Intérêt pour le corpus.** Régression de validation contextuelle (URL, MIME, SVG, HTML embarqué) et de persistance entre la donnée source et son rendu. Vérifier le correctif et les préconditions détaillées dans l'advisory primaire.
+
+**Source.** https://github.com/TryGhost/Ghost/security/advisories/GHSA-v3xr-g6p2-fvgv
+
 ## 2026-10 — divulgations et indexations vérifiées
 
 ### 2026-10-08 — JHipster — ContentType de Blob persisté puis réutilisé dans un document `blob:` de même origine
@@ -650,6 +785,8 @@ source: https://github.com/indico/indico/security/advisories/GHSA-cw24-x4mj-fw3q
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-11** — Rattrapage des advisories SiYuan et Ghost (six cas), dédupliqués et neutralisés.
 
 - **2026-10-10** — Rattrapage de trois cas DOMSanitizer et deux cas Indico ; entrées non destructives et dédupliquées.
 
