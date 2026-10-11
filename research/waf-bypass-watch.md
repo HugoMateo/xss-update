@@ -44,6 +44,121 @@ source: URL
 
 ## Entrées
 
+### 2026-10 — CVE-2026-107825 — Coraza <3.8.0
+
+```yaml
+date_publication: 2026-10-02
+date_veille: 2026-10-11
+famille: parser-differential
+produit_waf: "Coraza <3.8.0 ; vérifier la version précise dans l'advisory"
+contexte: "URI invalide conservée en brut après échec de parsing, mais variables QUERY_STRING/ARGS_GET non renseignées pour certaines intégrations directes"
+identifiants: [CVE-2026-107825]
+plateforme_source: Coraza / GitHub Security Advisory / CVE
+payload_neutralise: "requête de laboratoire avec chemins, clés, noms de fichiers et valeurs sentinelles ; comparer les champs visibles par le WAF et par le backend, sans action active"
+payload_hash_ou_reference: CVE-2026-107825
+transformation: "URI invalide conservée en brut après échec de parsing, mais variables QUERY_STRING/ARGS_GET non renseignées pour certaines intégrations directes"
+statut: à reproduire
+source: https://www.cve.org/CVERecord?id=CVE-2026-107825
+```
+
+**Cause racine.** URI invalide conservée en brut après échec de parsing, mais variables QUERY_STRING/ARGS_GET non renseignées pour certaines intégrations directes.
+
+**Impact défensif.** Mesurer la parité d'interprétation entre couche WAF et application avec des sentinelles non dangereuses, puis vérifier les versions corrigées et l'intégration concernée. Ne pas présumer qu'un WAF particulier est contournable sans reproduire la configuration.
+
+**Source.** https://www.cve.org/CVERecord?id=CVE-2026-107825
+
+### 2026-10 — CVE-2026-107835 — Coraza
+
+```yaml
+date_publication: 2026-10-02
+date_veille: 2026-10-11
+famille: parser-differential
+produit_waf: "Coraza ; vérifier la version précise dans l'advisory"
+contexte: "écart de parsing des cookies entre WAF et backend"
+identifiants: [CVE-2026-107835]
+plateforme_source: Coraza / GitHub Security Advisory / CVE
+payload_neutralise: "requête de laboratoire avec chemins, clés, noms de fichiers et valeurs sentinelles ; comparer les champs visibles par le WAF et par le backend, sans action active"
+payload_hash_ou_reference: CVE-2026-107835
+transformation: "écart de parsing des cookies entre WAF et backend"
+statut: à reproduire
+source: https://www.cve.org/CVERecord?id=CVE-2026-107835
+```
+
+**Cause racine.** écart de parsing des cookies entre WAF et backend.
+
+**Impact défensif.** Mesurer la parité d'interprétation entre couche WAF et application avec des sentinelles non dangereuses, puis vérifier les versions corrigées et l'intégration concernée. Ne pas présumer qu'un WAF particulier est contournable sans reproduire la configuration.
+
+**Source.** https://www.cve.org/CVERecord?id=CVE-2026-107835
+
+### 2026-10 — GHSA-5gj4-9gm7-2fx2 — Coraza
+
+```yaml
+date_publication: 2026-10-02
+date_veille: 2026-10-11
+famille: parser-differential
+produit_waf: "Coraza ; vérifier la version précise dans l'advisory"
+contexte: "collision de clés JSON pouvant faire diverger la valeur inspectée de celle utilisée par l'application"
+identifiants: [GHSA-5gj4-9gm7-2fx2]
+plateforme_source: Coraza / GitHub Security Advisory / CVE
+payload_neutralise: "requête de laboratoire avec chemins, clés, noms de fichiers et valeurs sentinelles ; comparer les champs visibles par le WAF et par le backend, sans action active"
+payload_hash_ou_reference: GHSA-5gj4-9gm7-2fx2
+transformation: "collision de clés JSON pouvant faire diverger la valeur inspectée de celle utilisée par l'application"
+statut: à reproduire
+source: https://github.com/corazawaf/coraza/security/advisories/GHSA-5gj4-9gm7-2fx2
+```
+
+**Cause racine.** collision de clés JSON pouvant faire diverger la valeur inspectée de celle utilisée par l'application.
+
+**Impact défensif.** Mesurer la parité d'interprétation entre couche WAF et application avec des sentinelles non dangereuses, puis vérifier les versions corrigées et l'intégration concernée. Ne pas présumer qu'un WAF particulier est contournable sans reproduire la configuration.
+
+**Source.** https://github.com/corazawaf/coraza/security/advisories/GHSA-5gj4-9gm7-2fx2
+
+### 2026-10 — GHSA-w253-m66g-rx24 — Coraza
+
+```yaml
+date_publication: 2026-10-02
+date_veille: 2026-10-11
+famille: content-type
+produit_waf: "Coraza ; vérifier la version précise dans l'advisory"
+contexte: "sélection du processeur de corps HTTP selon Content-Type non alignée sur l'interprétation en aval"
+identifiants: [GHSA-w253-m66g-rx24]
+plateforme_source: Coraza / GitHub Security Advisory / CVE
+payload_neutralise: "requête de laboratoire avec chemins, clés, noms de fichiers et valeurs sentinelles ; comparer les champs visibles par le WAF et par le backend, sans action active"
+payload_hash_ou_reference: GHSA-w253-m66g-rx24
+transformation: "sélection du processeur de corps HTTP selon Content-Type non alignée sur l'interprétation en aval"
+statut: à reproduire
+source: https://github.com/corazawaf/coraza/security/advisories/GHSA-w253-m66g-rx24
+```
+
+**Cause racine.** sélection du processeur de corps HTTP selon Content-Type non alignée sur l'interprétation en aval.
+
+**Impact défensif.** Mesurer la parité d'interprétation entre couche WAF et application avec des sentinelles non dangereuses, puis vérifier les versions corrigées et l'intégration concernée. Ne pas présumer qu'un WAF particulier est contournable sans reproduire la configuration.
+
+**Source.** https://github.com/corazawaf/coraza/security/advisories/GHSA-w253-m66g-rx24
+
+### 2026-10 — GHSA-3wr7-993q-jrff — Coraza
+
+```yaml
+date_publication: 2026-10-02
+date_veille: 2026-10-11
+famille: parser-differential
+produit_waf: "Coraza ; vérifier la version précise dans l'advisory"
+contexte: "interprétation divergente des noms de fichiers multipart entre WAF et backend"
+identifiants: [GHSA-3wr7-993q-jrff]
+plateforme_source: Coraza / GitHub Security Advisory / CVE
+payload_neutralise: "requête de laboratoire avec chemins, clés, noms de fichiers et valeurs sentinelles ; comparer les champs visibles par le WAF et par le backend, sans action active"
+payload_hash_ou_reference: GHSA-3wr7-993q-jrff
+transformation: "interprétation divergente des noms de fichiers multipart entre WAF et backend"
+statut: à reproduire
+source: https://github.com/corazawaf/coraza/security/advisories/GHSA-3wr7-993q-jrff
+```
+
+**Cause racine.** interprétation divergente des noms de fichiers multipart entre WAF et backend.
+
+**Impact défensif.** Mesurer la parité d'interprétation entre couche WAF et application avec des sentinelles non dangereuses, puis vérifier les versions corrigées et l'intégration concernée. Ne pas présumer qu'un WAF particulier est contournable sans reproduire la configuration.
+
+**Source.** https://github.com/corazawaf/coraza/security/advisories/GHSA-3wr7-993q-jrff
+
 ### 2026-09-27 — CVE-2026-61812 — t:htmlEntityDecode ne reconnaissait que cinq entités nommées,
 
 ```yaml
@@ -342,6 +457,8 @@ source: https://www.wordfence.com/blog/2026/09/5-million-wordpress-sites-affecte
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-11** — Rattrapage de cinq références Coraza, avec marqueurs inertes ; détails d'intégration à confirmer avant reproduction.
 
 - **2026-10-10** — Rattrapage de six advisories ModSecurity de septembre 2026 : HTML entities, multipart RFC 2231, commentaires adjacents, Content-Type, PCRE2 @rxGlobal et Base64URL ; cas neutralisés et dédupliqués.
 
