@@ -44,6 +44,29 @@ source: URL
 
 ## Entrées
 
+### 2026-10-08 — GHSA-g4qm-m288-5cp9 — Coraza : désaccord de parsing des cookies
+
+```yaml
+date_publication: 2026-10-08
+date_veille: 2026-10-12
+famille: parser-differential
+produit_waf: "Coraza v3 < 3.8.1 (vérifier le périmètre de la version dans l'advisory)"
+contexte: "Cookie HTTP ; caractères de contrôle ASCII au voisinage du séparateur nom/valeur"
+identifiants: [GHSA-g4qm-m288-5cp9]
+plateforme_source: "GitHub Security Advisory / Coraza"
+payload_neutralise: "Cookie: NOM_SENTINELLE<CTL>=VALEUR_SENTINELLE ; <CTL> est une représentation textuelle, pas un octet de contrôle réel"
+payload_hash_ou_reference: "GHSA-g4qm-m288-5cp9"
+transformation: "Conserver ou retirer les caractères de contrôle aux frontières de la paire nom=valeur selon le parseur ; comparer les clés et valeurs résultantes côté WAF et backend"
+statut: "à reproduire en laboratoire"
+source: "https://github.com/corazawaf/coraza/security/advisories/GHSA-g4qm-m288-5cp9"
+```
+
+**Cause racine.** Le parseur de cookies du WAF et certains parseurs applicatifs ne normalisent pas les caractères de contrôle aux mêmes endroits ; la règle et l'application peuvent donc observer des noms ou valeurs différents.
+
+**Impact défensif.** Tester la cohérence des variables `REQUEST_COOKIES` et `REQUEST_COOKIES_NAMES` avec des sentinelles, vérifier la version corrigée et la configuration d'intégration. Aucune chaîne d'évasion opérationnelle n'est reproduite.
+
+**Sources.** https://github.com/corazawaf/coraza/security/advisories/GHSA-g4qm-m288-5cp9 ; https://github.com/corazawaf/coraza/releases/tag/v3.8.1
+
 ### 2026-10 — CVE-2026-107825 — Coraza <3.8.0
 
 ```yaml
@@ -457,6 +480,8 @@ source: https://www.wordfence.com/blog/2026/09/5-million-wordpress-sites-affecte
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-12** — Ajout de GHSA-g4qm-m288-5cp9 : différentiel de parsing des cookies Coraza/backend, PoC neutralisée.
 
 - **2026-10-11** — Rattrapage de cinq références Coraza, avec marqueurs inertes ; détails d'intégration à confirmer avant reproduction.
 
