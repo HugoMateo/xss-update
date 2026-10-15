@@ -44,6 +44,51 @@ source: URL
 
 ## Entrées
 
+
+### 2026-10-02 — CVE-2026-41510 / GHSA-6r3q-mjv7-xr8m — Coraza
+
+```yaml
+date_publication: 2026-10-02
+date_veille: 2026-10-15
+famille: parser-differential
+produit_waf: "Coraza v3 ; corrigé en 3.8.1"
+contexte: "Limite SecArgumentsLimit atteinte : paramètres supplémentaires ignorés silencieusement lors de l'inspection"
+identifiants: [CVE-2026-41510, GHSA-6r3q-mjv7-xr8m]
+plateforme_source: "Coraza / GitHub Security Advisory"
+payload_neutralise: "Requête de laboratoire avec champs et valeurs SENTINELLE_N, sans syntaxe d'attaque ; compter les éléments observés par chaque couche"
+transformation: "Limite SecArgumentsLimit atteinte : paramètres supplémentaires ignorés silencieusement lors de l'inspection"
+statut: "à reproduire en laboratoire"
+source: "https://github.com/corazawaf/coraza/security/advisories/GHSA-6r3q-mjv7-xr8m"
+```
+
+**Cause racine.** Limite SecArgumentsLimit atteinte : paramètres supplémentaires ignorés silencieusement lors de l'inspection.
+
+**Impact défensif.** Vérifier que les erreurs de traitement et les limites d'inspection déclenchent une décision explicite et observable, plutôt qu'un passage silencieux. Régression sur des sentinelles inoffensives uniquement.
+
+**Source.** https://github.com/corazawaf/coraza/security/advisories/GHSA-6r3q-mjv7-xr8m
+
+### 2026-10-02 — CVE-2026-41508 / GHSA-r3rm-qphw-hh76 — Coraza
+
+```yaml
+date_publication: 2026-10-02
+date_veille: 2026-10-15
+famille: parser-differential
+produit_waf: "Coraza v3 ; corrigé en 3.8.0"
+contexte: "Corps multipart incomplet : erreur de parsing non remontée de manière fiable aux règles de contrôle"
+identifiants: [CVE-2026-41508, GHSA-r3rm-qphw-hh76]
+plateforme_source: "Coraza / GitHub Security Advisory"
+payload_neutralise: "Requête de laboratoire avec champs et valeurs SENTINELLE_N, sans syntaxe d'attaque ; compter les éléments observés par chaque couche"
+transformation: "Corps multipart incomplet : erreur de parsing non remontée de manière fiable aux règles de contrôle"
+statut: "à reproduire en laboratoire"
+source: "https://github.com/corazawaf/coraza/security/advisories/GHSA-r3rm-qphw-hh76"
+```
+
+**Cause racine.** Corps multipart incomplet : erreur de parsing non remontée de manière fiable aux règles de contrôle.
+
+**Impact défensif.** Vérifier que les erreurs de traitement et les limites d'inspection déclenchent une décision explicite et observable, plutôt qu'un passage silencieux. Régression sur des sentinelles inoffensives uniquement.
+
+**Source.** https://github.com/corazawaf/coraza/security/advisories/GHSA-r3rm-qphw-hh76
+
 ### 2026-10-08 — GHSA-g4qm-m288-5cp9 — Coraza : désaccord de parsing des cookies
 
 ```yaml
@@ -480,6 +525,8 @@ source: https://www.wordfence.com/blog/2026/09/5-million-wordpress-sites-affecte
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-15** — Deux avis Coraza : limite d'arguments et corps multipart incomplet, tests neutralisés.
 
 - **2026-10-12** — Ajout de GHSA-g4qm-m288-5cp9 : différentiel de parsing des cookies Coraza/backend, PoC neutralisée.
 
