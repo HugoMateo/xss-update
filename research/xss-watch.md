@@ -274,6 +274,51 @@ source: https://github.com/TryGhost/Ghost/security/advisories/GHSA-v3xr-g6p2-fvg
 
 **Source.** https://github.com/TryGhost/Ghost/security/advisories/GHSA-v3xr-g6p2-fvgv
 
+
+## 2026-10-15 — rattrapage YouTrack
+
+### 2026-10-01 — YouTrack CVE-2026-103493
+
+```yaml
+date_publication: 2026-10-01
+date_veille: 2026-10-15
+famille: stored-xss
+contexte: "rendu de contenu Mermaid et LaTeX"
+produit_version: "JetBrains YouTrack avant 2026.2.19422"
+navigateurs: "Navigateurs exécutant l'interface web ; moteur non spécifié"
+identifiants: [CVE-2026-103493]
+plateforme_source: "JetBrains / GitHub Advisory Database"
+statut: nouveau
+sources:
+  - https://github.com/advisories/GHSA-6qqm-669w-6778
+  - https://www.jetbrains.com/privacy-security/issues-fixed/
+```
+
+**Description.** Validation ou encodage contextuel insuffisant de contenu non fiable dans le rendu de contenu Mermaid et LaTeX. **Régression neutralisée :** utiliser une chaîne sentinelle contenant uniquement des caractères de frontière HTML inertes, vérifier le texte final, les nœuds DOM et l'absence de création d'élément inattendu ; aucun script ni requête externe.
+
+**Intérêt pour le corpus.** Vérifier la cohérence de l'assainissement entre format source, conversion en HTML et composant d'affichage, avant/après 2026.2.19422. Source : https://github.com/advisories/GHSA-6qqm-669w-6778.
+
+### 2026-09-30 — YouTrack CVE-2026-100275
+
+```yaml
+date_publication: 2026-09-30
+date_veille: 2026-10-15
+famille: stored-xss
+contexte: "notification d'erreur de workflow affichée dans une interface toast"
+produit_version: "JetBrains YouTrack avant 2026.2.19197"
+navigateurs: "Navigateurs exécutant l'interface web ; moteur non spécifié"
+identifiants: [CVE-2026-100275]
+plateforme_source: "JetBrains / GitHub Advisory Database"
+statut: nouveau
+sources:
+  - https://github.com/advisories/GHSA-fw7c-qpvf-j7qx
+  - https://www.jetbrains.com/privacy-security/issues-fixed/
+```
+
+**Description.** Validation ou encodage contextuel insuffisant de contenu non fiable dans le notification d'erreur de workflow affichée dans une interface toast. **Régression neutralisée :** utiliser une chaîne sentinelle contenant uniquement des caractères de frontière HTML inertes, vérifier le texte final, les nœuds DOM et l'absence de création d'élément inattendu ; aucun script ni requête externe.
+
+**Intérêt pour le corpus.** Vérifier la cohérence de l'assainissement entre format source, conversion en HTML et composant d'affichage, avant/après 2026.2.19197. Source : https://github.com/advisories/GHSA-fw7c-qpvf-j7qx.
+
 ## 2026-10 — divulgations et indexations vérifiées
 
 ### 2026-10-08 — JHipster — ContentType de Blob persisté puis réutilisé dans un document `blob:` de même origine
@@ -785,6 +830,8 @@ source: https://github.com/TryGhost/Ghost/security/advisories/GHSA-v3xr-g6p2-fvg
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-15** — Deux cas YouTrack (Mermaid/LaTeX et toast d'erreur workflow), tests neutralisés.
 
 - **2026-10-11** — Rattrapage des advisories SiYuan et Ghost (six cas), dédupliqués et neutralisés.
 
