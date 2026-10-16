@@ -27,6 +27,129 @@ source: URL
 ---
 
 
+
+## 2026-10-16 — advisories Filament, IBM et correctifs MathLive
+
+### 2026-10-14 — Filament — nom de tenant dans l'infobulle — GHSA-9f9v-vm6w-3wx6
+
+```yaml
+date_publication: 2026-10-14
+date_veille: 2026-10-16
+famille: stored-xss
+contexte: "Le nom de tenant est échappé dans le menu standard mais rendu comme HTML dans l'infobulle du menu lorsque la barre latérale du bureau est repliée."
+produit: "filament/filament >=3.0.0 <3.3.57 ; >=4.0.0 <4.15.2 ; >=5.0.0 <5.10.2 ; corrigé en 3.3.57, 4.15.2, 5.10.2"
+navigateurs: []
+identifiants: [GHSA-9f9v-vm6w-3wx6]
+statut: nouveau
+source: https://github.com/filamentphp/filament/security/advisories/GHSA-9f9v-vm6w-3wx6
+```
+
+**Plateforme / origine.** Advisory GitHub publié par le mainteneur Filament.
+
+**Mécanisme et préconditions.** Le nom de tenant est échappé dans le menu standard mais rendu comme HTML dans l'infobulle du menu lorsque la barre latérale du bureau est repliée. Panneau multi-tenant, barre latérale desktop repliable ; contrôle du nom de tenant et accès de la victime à ce tenant, puis affichage de l'infobulle.
+
+**PoC neutralisée.** Nom de tenant factice avec caractères <, >, guillemets et esperluette ; comparer le texte et les nœuds DOM de l'infobulle et du menu sans attribut actif.
+
+**Intérêt pour le corpus.** Assurer le même échappement dans les composants texte et tooltip.
+
+**Source primaire.** https://github.com/filamentphp/filament/security/advisories/GHSA-9f9v-vm6w-3wx6
+
+### 2026-10-08 — Filament — extension de fichier issue du nom client — GHSA-q2ph-j76w-c7qx
+
+```yaml
+date_publication: 2026-10-08
+date_veille: 2026-10-16
+famille: stored-xss
+contexte: "FileUpload concatène un ULID et l'extension fournie par le client, alors que la validation s'appuie sur le MIME détecté ; un stockage public same-origin peut servir un type actif d'après l'extension."
+produit: "filament/forms >=3.0.0 <3.3.56 ; >=4.0.0 <4.15.0 ; >=5.0.0 <5.10.0 ; corrigé en 3.3.56, 4.15.0, 5.10.0"
+navigateurs: []
+identifiants: [GHSA-q2ph-j76w-c7qx]
+statut: nouveau
+source: https://github.com/filamentphp/filament/security/advisories/GHSA-q2ph-j76w-c7qx
+```
+
+**Plateforme / origine.** Advisory GitHub publié par le mainteneur Filament.
+
+**Mécanisme et préconditions.** FileUpload concatène un ULID et l'extension fournie par le client, alors que la validation s'appuie sur le MIME détecté ; un stockage public same-origin peut servir un type actif d'après l'extension. Utilisateur authentifié autorisé à déposer un fichier ; disque public, origine applicative, Content-Type dérivé de l'extension ; consultation ultérieure du fichier.
+
+**PoC neutralisée.** Téléverser en laboratoire un fichier texte inerte au nom à extension incohérente avec son MIME ; vérifier nom stocké, Content-Type, Content-Disposition et origine, sans contenu exécutable.
+
+**Intérêt pour le corpus.** Découpler extension contrôlée par le client, type détecté et politique de restitution des fichiers.
+
+**Source primaire.** https://github.com/filamentphp/filament/security/advisories/GHSA-q2ph-j76w-c7qx
+
+### 2026-10-08 — Filament — aperçu de bloc RichEditor importé — GHSA-9g92-9qj5-cqjc
+
+```yaml
+date_publication: 2026-10-08
+date_veille: 2026-10-16
+famille: dom-xss
+contexte: "Lors d'un collage ou glisser-déposer de HTML externe, le RichEditor décode la métadonnée data-preview d'un bloc personnalisé et l'affiche sans sanitisation."
+produit: "filament/forms >=4.0.0 <4.15.0 ; >=5.0.0 <5.10.0 ; corrigé en 4.15.0, 5.10.0"
+navigateurs: []
+identifiants: [GHSA-9g92-9qj5-cqjc]
+statut: nouveau
+source: https://github.com/filamentphp/filament/security/advisories/GHSA-9g92-9qj5-cqjc
+```
+
+**Plateforme / origine.** Advisory GitHub publié par le mainteneur Filament.
+
+**Mécanisme et préconditions.** Lors d'un collage ou glisser-déposer de HTML externe, le RichEditor décode la métadonnée data-preview d'un bloc personnalisé et l'affiche sans sanitisation. Utilisateur colle ou dépose dans RichEditor un bloc personnalisé provenant d'une source HTML non fiable.
+
+**PoC neutralisée.** Importer un bloc de prévisualisation avec une valeur data-preview composée uniquement de texte sentinelle et de délimiteurs HTML inertes ; vérifier que le décodage ne crée aucun nœud inattendu.
+
+**Intérêt pour le corpus.** Appliquer la sanitisation après décodage des métadonnées, au dernier sink de prévisualisation.
+
+**Source primaire.** https://github.com/filamentphp/filament/security/advisories/GHSA-9g92-9qj5-cqjc
+
+### 2026-09-28 — IBM DataPower Gateway — XSS dans la Web UI — CVE-2026-14990
+
+```yaml
+date_publication: 2026-09-28
+date_veille: 2026-10-16
+famille: autre
+contexte: "XSS de l'interface Web DataPower ; IBM confirme qu'un utilisateur non authentifié peut injecter du JavaScript dans l'interface, sans publier dans ce bulletin le sink exact."
+produit: "IBM DataPower Gateway 10.6.0.0 à 10.6.0.10 ; corrigé en 10.6.0.11 (DT501991)"
+navigateurs: []
+identifiants: [CVE-2026-14990]
+statut: nouveau
+source: https://www.ibm.com/support/pages/node/7289790
+```
+
+**Plateforme / origine.** Bulletin de sécurité IBM.
+
+**Mécanisme et préconditions.** XSS de l'interface Web DataPower ; IBM confirme qu'un utilisateur non authentifié peut injecter du JavaScript dans l'interface, sans publier dans ce bulletin le sink exact. Accès réseau à l'interface concernée ; interaction utilisateur requise selon CVSS IBM ; mécanisme précis non documenté dans le bulletin.
+
+**PoC neutralisée.** Marqueurs textuels uniques dans les champs autorisés d'un banc de test isolé ; contrôler encodage de sortie et absence de nouveaux nœuds, sans exécuter de script.
+
+**Intérêt pour le corpus.** Régression de l'échappement des entrées non authentifiées vers l'interface de gestion ; priorité de mise à niveau élevée (CVSS 9.3 IBM).
+
+**Source primaire.** https://www.ibm.com/support/pages/node/7289790
+
+### 2026-10-09 — MathLive — attributs SVG/HTML/MathML dérivés de LaTeX — MathLive 0.111.1 2026-10-09
+
+```yaml
+date_publication: 2026-10-09
+date_veille: 2026-10-16
+famille: parser-differential
+contexte: "Plusieurs frontières LaTeX → markup : option shadow de \\enclose écrite comme attribut SVG non cité ; valeurs \\htmlData / \\href mal citées ; notation \\enclose non échappée en MathML ; texte d'accessibilité injecté en HTML ; valeurs CSS insuffisamment validées."
+produit: "MathLive avant 0.111.1 ; correctif publié dans 0.111.1"
+navigateurs: []
+identifiants: []
+statut: nouveau
+source: https://github.com/arnog/mathlive/blob/master/CHANGELOG.md
+```
+
+**Plateforme / origine.** Changelog de l'éditeur MathLive.
+
+**Mécanisme et préconditions.** Plusieurs frontières LaTeX → markup : option shadow de \enclose écrite comme attribut SVG non cité ; valeurs \htmlData / \href mal citées ; notation \enclose non échappée en MathML ; texte d'accessibilité injecté en HTML ; valeurs CSS insuffisamment validées. Application convertissant du LaTeX non fiable en HTML, SVG ou MathML puis insérant ce rendu dans le DOM ; selon la variante, convertLatexToMarkup, math-span/math-div ou renderMathInElement.
+
+**PoC neutralisée.** Utiliser seulement des valeurs sentinelles avec espaces, guillemets, esperluettes et séparateurs dans les options LaTeX ; inspecter les attributs sérialisés et DOM, sans événements, scripts ni URL externes.
+
+**Intérêt pour le corpus.** Tester les changements de représentation entre grammaire LaTeX, échappement d'attributs SVG/HTML/MathML et rendu final ; ne pas compter uniquement sur la sanitisation du HTML en entrée.
+
+**Source primaire.** https://github.com/arnog/mathlive/blob/master/CHANGELOG.md
+
 ## 2026-10-10 — rattrapage des advisories DOMSanitizer et Indico
 
 ### 2026-09-28 — DOMSanitizer <=1.0.15 — CVE-2026-100370
@@ -830,6 +953,8 @@ sources:
 ---
 
 ## Journal de mise à jour
+
+- **2026-10-16** — Ajout de 5 références vérifiées : GHSA-9f9v-vm6w-3wx6, GHSA-q2ph-j76w-c7qx, GHSA-9g92-9qj5-cqjc, CVE-2026-14990, MathLive 0.111.1 2026-10-09 ; mécanismes et préconditions, tests inertes et sources primaires.
 
 - **2026-10-15** — Deux cas YouTrack (Mermaid/LaTeX et toast d'erreur workflow), tests neutralisés.
 
